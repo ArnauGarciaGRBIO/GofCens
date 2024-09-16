@@ -24,6 +24,17 @@ To conduct goodness-of-fit tests with right censored data we can use the `KScens
 ```{r, eval = FALSE}
 # Kolmogorov-Smirnov
 set.seed(123)
+KScens(Surv(time, status) ~ 1, colon, distr = "norm")
+
+# Cramér-von Mises
 colonsamp <- colon[sample(nrow(colon), 300), ]
+CvMcens(Surv(time, status) ~ 1, colonsamp, distr = "normal")
+
+# Anderson-Darling
 ADcens(Surv(time, status) ~ 1, colonsamp, distr = "normal")
+
+# Generalized chi-squared-type test
+chisqcens(Surv(time, status) ~ 1, colonsamp, M = 6, distr = "normal")
 ```
+The graphical tools provide nice plots as well as 
+
