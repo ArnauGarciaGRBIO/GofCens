@@ -22,7 +22,6 @@ The **GofCens** package include the following graphical tools and goodness-of-fi
 install.packages("GofCens")
 ```
 
-```
 
 ## Minimal Example
 To conduct goodness-of-fit tests with right censored data we can use the `KScens()`, `CvMcens()`, `ADcens()` and `chisqcens()` functions. We illustrate this by means of the `colon` dataset:
