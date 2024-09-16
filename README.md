@@ -6,7 +6,7 @@ output: github_document
 
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/JMbayes2)](https://cran.r-project.org/package=GofCens)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/GofCens)](https://cran.r-project.org/package=GofCens)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/GofCens)](https://cran.r-project.org/package=GofCens)
 [![Download counter](https://cranlogs.r-pkg.org/badges/GofCens)](https://cran.r-project.org/package=GofCens)
 <!-- badges: end -->
