@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 # GofCens: Goodness-of-Fit Methods for Complete and Right-Censored Data <img src="man/figures/provisional_logo.png" align="right" alt="" width="160" />
 
 
