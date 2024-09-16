@@ -36,5 +36,13 @@ ADcens(Surv(time, status) ~ 1, colonsamp, distr = "normal")
 # Generalized chi-squared-type test
 chisqcens(Surv(time, status) ~ 1, colonsamp, M = 6, distr = "normal")
 ```
-The graphical tools provide nice plots as well as 
+The graphical tools provide nice plots via the functions `cumhazPlot()`, `kmPlot()` and `probPlot()`. See several examples using the `nba` data set:
+```{r, eval = FALSE}
+data(nba)
+cumhazPlot(Surv(survtime, cens) ~ 1, nba, distr = c("expo", "normal", "gumbel"))
+kmPlot(Surv(survtime, cens) ~ 1, nba, distr = c("normal", "weibull", "lognormal"),
+       prnt = FALSE)
+probPlot(Surv(survtime, cens) ~ 1, nba, "lognorm", plots = c("PP", "QQ", "SP"),
+         ggp = TRUE, m = matrix(1:3, nr = 1))
+``` 
 
