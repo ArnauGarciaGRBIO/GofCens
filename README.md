@@ -1,4 +1,4 @@
-# GofCens: Goodness-of-Fit Methods for Complete and Right-Censored Data <img src="man/figures/GofCens_logo1.png" align="right" alt="" width="250" />
+# GofCens: Goodness-of-Fit Methods for Complete and Right-Censored Data <img src="man/figures/GofCens_logo2.png" align="right" alt="" width="250" />
 
 
 <!-- badges: start -->
