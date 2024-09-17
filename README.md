@@ -19,7 +19,7 @@ install.packages("GofCens")
 ```
 
 
-## Minimal Example
+## Brief Example
 To conduct goodness-of-fit tests with right censored data we can use the `KScens()`, `CvMcens()`, `ADcens()` and `chisqcens()` functions. We illustrate this by means of the `colon` dataset:
 ```{r, eval = FALSE}
 # Kolmogorov-Smirnov
