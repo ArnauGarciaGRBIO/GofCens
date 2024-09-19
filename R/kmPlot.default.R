@@ -50,10 +50,8 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
       muu <- unname(coefficients(fitExpo))
       params$exponential <- 1 / exp(-muu)
       names(params$exponential) <- "scale"
-      #using delta method to compute the se
       se$exponential <- sqrt(fitExpo$var[1])*exp(muu)
       names(se$exponential) <- "scale (se)"
-      #we save aic and bic for the model
       aic$exponential <- 2 - 2*fitExpo$loglik[1]
       bic$exponential <- log(length(times)) - 2*fitExpo$loglik[1]
       srvline$exponential <- 1 - pexp(sqtime, exp(-muu))

@@ -1,4 +1,3 @@
-#we set aic and bic to true, if false these metrics are not returned
 cumhazPlot.default <- function(times, cens = rep(1, length(times)),
                                distr = "all6", colour = 1, betaLimits = c(0, 1),
                                igumb = c(10, 10), ggp = FALSE, m = NULL,
@@ -41,8 +40,6 @@ cumhazPlot.default <- function(times, cens = rep(1, length(times)),
   tim <- summary(survNA)$time
   genlis <- vector("list", length(distributions))
   names(genlis) <- distributions
-  #add "se" (standard errors) to the list of objects
-  #add "aic" and "bic" to the lis of objects
   for (v in c("params", "se", "aic", "bic", "xscale", "yscale", "xlabs",
               "ylabs", "regline", "titl")) {
     assign(v, genlis)
@@ -55,10 +52,8 @@ cumhazPlot.default <- function(times, cens = rep(1, length(times)),
       muu <- unname(coefficients(fitExpo))
       params$exponential <- 1 / exp(-muu)
       names(params$exponential) <- "scale"
-      #using delta method to compute the se
       se$exponential <- sqrt(fitExpo$var[1])*exp(muu)
       names(se$exponential) <- "scale (se)"
-      #we save aic and bic for the model
       aic$exponential <- 2 - 2*fitExpo$loglik[1]
       bic$exponential <- log(length(times)) - 2*fitExpo$loglik[1]
       xscale$exponential <- tim
@@ -76,7 +71,6 @@ cumhazPlot.default <- function(times, cens = rep(1, length(times)),
       scaleGumb <- fitGumb$estimate[2]
       params$gumbel <- c(locGumb, scaleGumb)
       names(params$gumbel) <- c("location", "scale")
-      #we take from the fitdistcens object the standard deviation and we save it
       locGumbSE <- fitGumb$sd[1]
       scaleGumbSE <- fitGumb$sd[2]
       se$gumbel <- c(locGumbSE, scaleGumbSE)
