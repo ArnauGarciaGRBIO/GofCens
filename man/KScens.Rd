@@ -5,7 +5,8 @@
 \title{Kolmogorov-Smirnov test for complete and right-censored data}
 \description{
   Function \code{KScens} computes the Kolmogorov-Smirnov statistic and p-value for complete
-  and right-censored data against eight possible distributions.
+  and right-censored data against eight possible distributions using either bootsrapping or
+  a modified test.
 }
 
 \usage{
