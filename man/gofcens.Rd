@@ -7,7 +7,7 @@
 \description{
   Function \code{gofcens} computes the Kolmogorov-Smirnov, Cramér-von Mises, and
   Anderson-Darling statistics ans p-values for complete and right-censored data against
-  eight possible distributions.
+  eight possible distributions using bootstrapping.
 }
 \usage{
 \method{gofcens}{default}(times, cens = rep(1, length(times)),
