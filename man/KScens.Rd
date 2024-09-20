@@ -12,9 +12,10 @@
 \method{KScens}{default}(times, cens = rep(1, length(times)),
        distr = c("exponential", "gumbel", "weibull", "normal",
                  "lognormal", "logistic", "loglogistic", "beta"),
-       betaLimits = c(0, 1), igumb = c(10, 10),
+       betaLimits = c(0, 1), igumb = c(10, 10), BS = 999,
        params0 = list(shape = NULL, shape2 = NULL, location = NULL,
-                      scale = NULL), ...)
+                      scale = NULL),
+       tol = 1e-04, boot = TRUE, ...)
 \method{KScens}{formula}(formula, data, ...)
 }
 
@@ -33,12 +34,16 @@
                     distribution is considered.}
   \item{igumb}{Two-components vector with the initial values for the estimation
                of the Gumbel distribution parameters.}
+  \item{BS}{Number of bootstrap samples.}
   \item{params0}{List specifying the parameters of the theoretical distribution.
                  By default, parameters are set to \code{NULL} and estimated with
                  the maximum likelihood method. This argument is only considered,
                  if all parameters of the studied distribution are specified.}
+  \item{tol}{Precision of survival times.}
   \item{formula}{A formula with a numeric vector as response (which assumes no censoring) or \code{Surv} object.}
   \item{data}{Data frame for variables in \code{formula}.}
+  \item{boot}{Logical to indicate if the p-value is computed using bootstrapping or using the
+              the modified Kolmogorov-Smirnov test (see details). Default is \code{TRUE}.}
   \item{\dots}{Additional arguments.}
 }
 
@@ -91,12 +96,17 @@ Technometrics 17 (4) (1975), 507-510.
 }
 
 \examples{
-# Complete data
+# Complete data with bootstrapping
 set.seed(123)
 KScens(times = rweibull(1000, 12, scale = 4), distr = "weibull")
 
-# Censored data
+
+
+# Censored data with bootstrapping
 KScens(Surv(time, status) ~ 1, colon, distr = "norm")
+
+# Censored data using the modified test
+KScens(Surv(time, status) ~ 1, colon, distr = "norm", boot = FALSE)
 
 data(nba)
 print(KScens(Surv(survtime, cens) ~ 1, nba, "logis"), degs = 2)
