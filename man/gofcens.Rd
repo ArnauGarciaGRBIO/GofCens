@@ -80,7 +80,7 @@ censored data}. In: Biometrika, 63 (3) (1976), 465-474.
 A. N. Pettitt and M. A. Stephens. \emph{Modified Cramér-von Mises statistics
 for censored data.} In: Biometrika, 63 (2) (1976), 291-298.
 }
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \section{Warning }{If the amount of data is large, the execution time of the
                    function can be elevated. The parameter \code{BS} can

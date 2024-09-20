@@ -75,7 +75,7 @@
   In addition, a list with the same contents is returned invisibly.
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \examples{
 # Complete data and default distributions

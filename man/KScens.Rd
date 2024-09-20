@@ -83,7 +83,7 @@ of One and Two Sample K-S statistics for Truncated or Censored Data}. In:
 Technometrics 17 (4) (1975), 507-510.
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \seealso{Function \link[stats]{ks.test} (Package \pkg{stats}) for complete data and
          \link{gofcens} for statistics and p-value of Kolmogorov-Smirnov, Cramér von-Mises

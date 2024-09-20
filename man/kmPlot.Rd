@@ -72,7 +72,7 @@
   In: Journal of the American Statistical Association 72.360a (1977): 854-858.
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \examples{
 # Plots for complete data and default distributions

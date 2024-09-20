@@ -79,7 +79,7 @@ An object of class \code{"chisqcens"} is a list containing the following compone
   J. H. Kim. \emph{Chi-Square Goodness-of-Fit Tests for Randomly Censored Data.}
   In: The Annals of Statistics, 21 (3) (1993), 1621-1639.
 }
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \examples{
 # Complete data

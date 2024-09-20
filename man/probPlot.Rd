@@ -124,7 +124,7 @@
   American Statistician 46 (1) (1992), 5-12.
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \examples{
 # P-P, Q-Q, SP, and EP plots for complete data

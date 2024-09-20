@@ -7,8 +7,8 @@ Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
                     email = "klaus.langohr@upc.edu"),
             person("Mireia", "Besalú", role = "aut"),
             person("Matilde", "Francisco", role = "aut"),
-            person("Guadalupe", "Gómez", role = "aut"),
-            person("Arnau", "Garcia", role = "aut"))
+            person("Arnau", "Garcia", role = "aut"),
+            person("Guadalupe", "Gómez", role = "aut"))
 Description: Graphical tools and goodness-of-fit tests for complete and right-censored data:
              1. Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests,
                 which use the empirical distribution function for complete data 
@@ -28,8 +28,8 @@ Packaged: 2024-07-29
 Author: Klaus Langohr [aut, cre],
   Mireia Besalú [aut],
   Matilde Francisco [aut],
-  Guadalupe Gómez [aut],
-  Arnau Garcia [aut]
+  Arnau Garcia [aut],
+  Guadalupe Gómez [aut]
 Maintainer: Klaus Langohr <klaus.langohr@upc.edu>
 Repository: CRAN
 Date/Publication: 2024-07-29

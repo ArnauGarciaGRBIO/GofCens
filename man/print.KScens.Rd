@@ -32,7 +32,7 @@ If \code{prnt = TRUE}, a list or table (if \code{outp = "table"}) containing the
 The list is also returned invisibly.
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, G. Gómez, A. Garcia.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 \examples{
 # List output
 set.seed(123)
