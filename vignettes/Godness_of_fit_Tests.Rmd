@@ -1,0 +1,81 @@
+---
+title: "Goodness of fit Tests"
+author: "Arnau Garcia"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Goodness of fit tests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("GofCens")
+```
+
+# Goodness of fit tests for complete and right-censored data
+
+In the `GofCens`package there are several goodness of fit methods. Let us illustrate how these methods work with different examples.
+
+## Kolmogorov-Smirnov test
+
+The Kolmogorov-Smirnov test is implemeted using a theoretical method and bootstrapping methods.
+
+```{r}
+set.seed(123)
+survt <- round(rlnorm(300, 2, 1), 2)
+censt <- round(rexp(300, 1 / 20), 2)
+KScens(times, delta, distr = "lognormal")
+```
+
+We can print it in table format:
+
+```{r}
+set.seed(123)
+print(KScens(times, delta, distr = "weibull"), outp = "table")
+```
+
+##  Cramér-von Mises test 
+
+An example with the generated data is:
+
+```{r}
+set.seed(123)
+CvMcens(times, delta, distr = "lognormal")
+```
+
+##  Anderson-Darling
+
+An example printing with table format:
+
+```{r}
+set.seed(123)
+print(ADcens(times, delta, distr = "lognormal", 
+             params0 = list(location = 2, scale = 1.5)), outp = "table")
+```
+
+## Gofcens function
+
+There is a function implemented computing the three p-values for the three previous tests simultaneously:
+
+```{r}
+set.seed(123)
+gofcens(times, delta, distr = "lognormal")
+```
+
+## Chi-squared type test
+
+Chi-squared type tests are also implemented by means of bootstrapping methods.
+
+```{r}
+set.seed(123)
+chisqcens(times, delta, M = 8, distr = "lognormal")
+
+```
+

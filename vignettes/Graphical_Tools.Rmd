@@ -1,0 +1,50 @@
+---
+title: "Graphical Tools"
+author: "Arnau Garcia"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Graphical Tools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("GofCens")
+```
+
+# Graphical tools for goodnes of fit
+
+Several graphical tools are implemented to analyze the goodness of fit.
+
+## Probability plot
+
+The `probPlot()` function allows the user to assess graphically how well any of the distributions fit to a sample of complete or right-censored survival times.
+
+```{r}
+probPlot(times, delta, distr = "lognormal", prnt = FALSE, cex.lab = 1.3)
+```
+
+## Cumulative hazard plot
+
+The `cumhazPlot()` function can be used to draw cumulative hazard plots for any of the distributions available.
+
+```{r}
+ cumhazPlot(times, delta, font.lab = 4, cex.lab = 1.3)
+```
+
+## Kaplan Meier plot
+
+The `kmPlot()` function can be used to graphically compare the nonparametric estimation of the survival function of a complete or right-censored sample of survival times with the parametric estimations of the survival function under different parametric models.
+
+```{r}
+kmPlot(times, delta, colour = "blue", ggp = TRUE, prnt = FALSE)
+```
+
+
