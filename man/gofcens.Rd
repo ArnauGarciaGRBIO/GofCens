@@ -71,9 +71,6 @@ An object of class \code{"gofcens"} is a list containing the following component
 }
 
 \references{
-T. R. Fleming et al. \emph{Modified Kolmogorov-Smirnov test procedure with application
-to arbitrarily right-censored data}. In: Biometrics 36 (1980), 607-625.
-
 J. A. Koziol and S. B. Green. \emph{A Cramér-von Mises statistic for randomly
 censored data}. In: Biometrika, 63 (3) (1976), 465-474.
 
