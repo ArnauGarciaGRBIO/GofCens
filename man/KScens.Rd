@@ -48,21 +48,28 @@
   \item{\dots}{Additional arguments.}
 }
 
-\details{Fleming et al. (1980) proposed a modified Kolmogorov-Smirnov test to use
+\details{By default the p-value is computed via bootstrapping methods.
+
+         The parameter estimation is acomplished with the \code{fitdistcens}
+         function of the \pkg{fitdistrplus} package.
+
+         To avoid long computation times due to bootstrapping, an alternative
+         with complete data is the function \code{\link[stats]{ks.test}} of the \pkg{stats} package.
+
+         The precision of the survival times is important mainly in
+         the data generation step of the bootstrap samples.
+
+         If \code{boot = FALSE} a modified test is used to compute the p-value.
+         Fleming et al. (1980) proposed a modified Kolmogorov-Smirnov test to use
          with right-censored data. This function reproduces this test for a
-         given survival data and a theorical distribution. The p-value is computed
-         following the results of Koziol and Byar (1975) and the output of the
-         function follows the notation of Fleming et al. (1980).
+         given survival data and a theorical distribution. The approximation for
+         the p-value is acceptable when it is smaller than 0.8 and excellent when
+         it is smaller than 0.2. The output of the function follows the notation
+         of Fleming et al. (1980).
 
          In presence of ties, different authors provide slightly different
          definitions of \eqn{\widehat{F}_n(t)}, with which other values of
-         the test statistic might be obtained.
-
-         An alternative with complete data is the function
-         \code{\link[stats]{ks.test}} of the \pkg{stats} package.
-
-         The parameter estimation is acomplished with the \code{fitdistcens}
-         function of the \pkg{fitdistrplus} package.}
+         the test statistic might be obtained.}
 
 \value{
 \code{KScens} returns an object of \link[base]{class} \code{"KScens"}.
@@ -83,10 +90,6 @@ An object of class \code{"KScens"} is a list containing the following components
 \references{
 T. R. Fleming et al. \emph{Modified Kolmogorov-Smirnov test procedure with application
 to arbitrarily right-censored data}. In: Biometrics 36 (1980), 607-625.
-
-J.A. Koziol and P. Byar. \emph{Percentage Points of the Asymptotic Distributions
-of One and Two Sample K-S statistics for Truncated or Censored Data}. In:
-Technometrics 17 (4) (1975), 507-510.
 }
 
 \author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
@@ -100,7 +103,6 @@ Technometrics 17 (4) (1975), 507-510.
 # Complete data with bootstrapping
 set.seed(123)
 KScens(times = rweibull(1000, 12, scale = 4), distr = "weibull")
-
 
 
 # Censored data with bootstrapping

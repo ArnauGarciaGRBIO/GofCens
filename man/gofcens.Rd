@@ -44,13 +44,11 @@
   \item{data}{Data frame for variables in \code{formula}.}
   \item{\dots}{Additional arguments.}
 }
-\details{Fleming et al. (1980) proposed a modified Kolmogorov-Smirnov test to be
-         used with right-censored data. Koziol and Green (1976) proposed a Cramér-von
-         Mises statistic for randomly censored data. This function reproduces
-         this test for a given survival data and a theorical distribution. In
-         presence of ties, different authors provide slightly different definitions
-         of the product-limit estimator, what might provide different values of
-         the test statistic.
+\details{All p-values are calculated via bootstrapping methods. For the three
+         hypothesis tests, the same data generated with the bootstrapping method are used.
+
+         The precision of the survival times is important mainly in
+         the data generation step of the bootstrap samples.
 
          When dealing with complete data, we recommend the use of functions
          \code{\link[stats]{ks.test}} of the \pkg{stats} package and
