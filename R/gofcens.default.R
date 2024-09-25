@@ -1,10 +1,10 @@
 gofcens.default <- function(times, cens = rep(1, length(times)),
-                            distr = c("exponential", "gumbel", "weibull", "normal",
-                                      "lognormal", "logistic", "loglogistic", "beta"),
-                            betaLimits = c(0, 1), igumb = c(10, 10),
-                            BS = 999, params0 = list(shape = NULL, shape2 = NULL,
-                                                     location = NULL, scale = NULL),
-                            ...) {
+                          distr = c("exponential", "gumbel", "weibull", "normal",
+                                    "lognormal", "logistic", "loglogistic", "beta"),
+                          betaLimits = c(0, 1), igumb = c(10, 10),
+                          BS = 999, params0 = list(shape = NULL, shape2 = NULL,
+                                                   location = NULL, scale = NULL),
+                          tol = 1e-04, ...) {
   if (!is.numeric(times)) {
     stop("Variable times must be numeric!")
   }
@@ -12,7 +12,7 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     stop("Times must be strictly positive!")
   }
   if (any(!cens %in% 0:1)) {
-    stop("Censoring status must be either 0 or 1!")
+    stop("Status indicator must be either 0 or 1!")
   }
   if (!is.list(params0)) {
     stop("params0 must be a list!")
@@ -39,6 +39,9 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
       stop("Argument 'params0' requires values for both shape parameters.")
     }
   }
+  rnd <- -log(tol, 10)
+  times <- round(pmax(times, tol), rnd)
+  n <- length(times)
   dd <- data.frame(left = as.vector(times), right = ifelse(cens == 1, times, NA))
   alpha0 <- params0$shape
   gamma0 <- params0$shape2
@@ -47,6 +50,7 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
   alphaML <- gammaML <- muML <- betaML <- NULL
   alphaSE <- gammaSE <- muSE <- betaSE <- NULL
   aic <- bic <- NULL
+  censKM <- survfit(Surv(times, 1 - cens) ~ 1)
   if (distr == "exponential") {
     if (!is.null(beta0)) {
       hypo <- c(scale = beta0)
@@ -57,6 +61,77 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- sqrt(paramsML$var[1])*exp(muu)
     aic <- 2 - 2*paramsML$loglik[1]
     bic <- log(length(times)) - 2*paramsML$loglik[1]
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - pexp(x, 1/ beta)
+    }
+    expStat <- function(dat) {
+      if (is.null(beta0)) {
+        muu <- unname(coefficients(survreg(Surv(dat$times, dat$cens) ~ 1,
+                                           dist = "exponential")))
+        betahat <- 1 / exp(-muu)
+      } else {
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- pexp(stimes, 1 / betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(pexp(stimes, 1 / betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    expRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rexp(n, mle), tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    beta <- ifelse(is.null(beta0), betaML, beta0)
+    bts <- boot(data.frame(times, cens), expStat, R = BS, sim = "parametric",
+                ran.gen = expRnd, mle = 1 / beta)
   }
   if (distr == "gumbel") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -76,6 +151,87 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- unname(paramsML$sd[2])
     aic <- paramsML$aic
     bic <- paramsML$bic
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - pgumbel(x, mu, beta)
+    }
+    gumbStat <- function(dat) {
+      if (is.null(mu0) || is.null(beta0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        paramsBSML <- fitdistcens(dd, "gumbel", start = list(alpha = muML,
+                                                             scale = betaML))
+        muhat <- unname(paramsBSML$estimate[1])
+        betahat <- unname(paramsBSML$estimate[2])
+      } else {
+        muhat <- mu0
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- pgumbel(stimes, muhat, betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(pgumbel(stimes, muhat, betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    gumbRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rgumbel(n, mle[1], mle[2]),tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(mu0) || is.null(beta0)) {
+      mu <- muML
+      beta <- betaML
+    } else {
+      mu <- mu0
+      beta <- beta0
+    }
+    bts <- boot(data.frame(times, cens), gumbStat, R = BS, sim = "parametric",
+                ran.gen = gumbRnd, mle = c(mu, beta))
   }
   if (distr == "weibull") {
     if (!is.null(alpha0) && !is.null(beta0)) {
@@ -88,6 +244,86 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- unname(paramsML$sd[2])
     aic <- paramsML$aic
     bic <- paramsML$bic
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - pweibull(x, alpha, beta)
+    }
+    weiStat <- function(dat) {
+      if (is.null(alpha0) || is.null(beta0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        paramsBSML <- fitdistcens(dd, "weibull")
+        alphahat <- unname(paramsBSML$estimate[1])
+        betahat <- unname(paramsBSML$estimate[2])
+      } else {
+        alphahat <- alpha0
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- pweibull(stimes, alphahat, betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(pweibull(stimes, alphahat, betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    weiRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rweibull(n, mle[1], mle[2]), tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(alpha0) || is.null(beta0)) {
+      alpha <- alphaML
+      beta <- betaML
+    } else {
+      alpha <- alpha0
+      beta <- beta0
+    }
+    bts <- boot(data.frame(times, cens), weiStat, R = BS, sim = "parametric",
+                ran.gen = weiRnd, mle = c(alpha, beta))
   }
   if (distr == "normal") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -100,6 +336,86 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- unname(paramsML$sd[2])
     aic <- paramsML$aic
     bic <- paramsML$bic
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - pnorm(x, mu, beta)
+    }
+    normStat <- function(dat) {
+      if (is.null(mu0) || is.null(beta0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        paramsBSML <- fitdistcens(dd, "norm")
+        muhat <- unname(paramsBSML$estimate[1])
+        betahat <- unname(paramsBSML$estimate[2])
+      } else {
+        muhat <- mu0
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- pnorm(stimes, muhat, betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(pnorm(stimes, muhat, betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    normRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rnorm(n, mle[1], mle[2]), tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(mu0) || is.null(beta0)) {
+      mu <- muML
+      beta <- betaML
+    } else {
+      mu <- mu0
+      beta <- beta0
+    }
+    bts <- boot(data.frame(times, cens), normStat, R = BS, sim = "parametric",
+                ran.gen = normRnd, mle = c(mu, beta))
   }
   if (distr == "lognormal") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -112,6 +428,86 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- unname(paramsML$sd[2])
     aic <- paramsML$aic
     bic <- paramsML$bic
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - plnorm(x, mu, beta)
+    }
+    lnormStat <- function(dat) {
+      if (is.null(mu0) || is.null(beta0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        paramsBSML <- fitdistcens(dd, "lnorm")
+        muhat <- unname(paramsBSML$estimate[1])
+        betahat <- unname(paramsBSML$estimate[2])
+      } else {
+        muhat <- mu0
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- plnorm(stimes, muhat, betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(plnorm(stimes, muhat, betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    lnormRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rlnorm(n, mle[1], mle[2]), tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(mu0) || is.null(beta0)) {
+      mu <- muML
+      beta <- betaML
+    } else {
+      mu <- mu0
+      beta <- beta0
+    }
+    bts <- boot(data.frame(times, cens), lnormStat, R = BS, sim = "parametric",
+                ran.gen = lnormRnd, mle = c(mu, beta))
   }
   if (distr == "logistic") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -124,6 +520,86 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- unname(paramsML$sd[2])
     aic <- paramsML$aic
     bic <- paramsML$bic
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - plogis(x, mu, beta)
+    }
+    logiStat <- function(dat) {
+      if (is.null(mu0) || is.null(beta0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        paramsBSML <- fitdistcens(dd, "logis")
+        muhat <- unname(paramsBSML$estimate[1])
+        betahat <- unname(paramsBSML$estimate[2])
+      } else {
+        muhat <- mu0
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- plogis(stimes, muhat, betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(plogis(stimes, muhat, betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    logiRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rlogis(n, mle[1], mle[2]), tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(mu0) || is.null(beta0)) {
+      mu <- muML
+      beta <- betaML
+    } else {
+      mu <- mu0
+      beta <- beta0
+    }
+    bts <- boot(data.frame(times, cens), logiStat, R = BS, sim = "parametric",
+                ran.gen = logiRnd, mle = c(mu, beta))
   }
   if (distr == "loglogistic") {
     if (!is.null(alpha0) && !is.null(beta0)) {
@@ -136,6 +612,85 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     betaSE <- sqrt(paramsML$var[1])*exp(unname(paramsML$icoef)[1])
     aic <- 2*2 - 2*paramsML$loglik[1]
     bic <- log(length(times))*2 - 2*paramsML$loglik[1]
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - pllogis(x, alpha, scale = beta)
+    }
+    llogiStat <- function(dat) {
+      if (is.null(alpha0) || is.null(beta0)) {
+        paramsBSML <- unname(survreg(Surv(dat$times, dat$cens) ~ 1,
+                                     dist = "loglogistic")$icoef)
+        alphahat <- 1 / exp(paramsBSML[2])
+        betahat <- exp(paramsBSML[1])
+      } else {
+        alphahat <- alpha0
+        betahat <- beta0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- pllogis(stimes, alphahat, scale = betahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(pllogis(stimes, alphahat, scale = betahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      A <- max(abs(c(Yl, Y, Ym)))
+      return(c(AD, CvM, A))
+    }
+    llogiRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rllogis(n, mle[1], scale = mle[2]),  tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(alpha0) || is.null(beta0)) {
+      alpha <- alphaML
+      beta <- betaML
+    } else {
+      alpha <- alpha0
+      beta <- beta0
+    }
+    bts <- boot(data.frame(times, cens), llogiStat, R = BS, sim = "parametric",
+                ran.gen = llogiRnd, mle = c(alpha, beta))
   }
   if (distr == "beta") {
     if (!is.null(alpha0) && !is.null(gamma0)) {
@@ -150,24 +705,99 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
     gammaSE <- unname(paramsML$sd[2])
     aic <- paramsML$aic
     bic <- paramsML$bic
+    SofT0 <- function(x, alpha, gamma, mu, beta) {
+      1 - pbeta((x - aBeta) / (bBeta - aBeta), alpha, gamma)
+    }
+    betaStat <- function(dat) {
+      if (is.null(alpha0) || is.null(gamma0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        paramsBSML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+        alphahat <- unname(paramsBSML$estimate[1])
+        gammahat <- unname(paramsBSML$estimate[2])
+      } else {
+        alphahat <- alpha0
+        gammahat <- gamma0
+      }
+
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- 1 - KM
+      y0 <- pbeta((stimes - aBeta) / (bBeta - aBeta), alphahat, gammahat)
+      AD <- nc * (-1 - log(y0[nc]) - log(1 - y0[nc])+
+                    sum(Fn[-nc]^2 *
+                          (-log(1 - y0[-1]) + log(y0[-1]) + log(1 - y0[-nc]) - log(y0[-nc]))) -
+                    2 * sum(Fn[-nc] * (-log(1 - y0[-1]) + log(1 - y0[-nc]))))
+
+      Fn <- c(1 - KM, NA)
+      y0 <- c(pbeta((stimes - aBeta) / (bBeta - aBeta), alphahat, gammahat), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+
+      sumSurvT <- survfit(Surv(dat$times, dat$cens) ~ 1, stype = 2, ctype = 2)
+      survT <- unique(data.frame(times = sumSurvT$time, surv = sumSurvT$surv))
+      stimes <- survT$time
+      m <- length(stimes)
+      svbefor <- c(1, survT$surv[-m])
+      aux2 <- numeric(m)
+      for (i in 1:m) {
+        if (sumSurvT$n.censor[i] > 0) {
+          aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
+                                               (0:(n.censor[i] - 1)))))
+        }
+      }
+      alfatj <- exp(-c(0, cumsum(aux2))[-m])
+      Atj <- sqrt(c(1, alfatj[-m])) *
+        log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
+              SofT0(stimes, alphahat, gammahat, muhat, betahat))
+      Atj[is.nan(Atj)] <- 0
+      Avec <- cumsum(Atj)
+      Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
+      Btj[is.nan(Btj)] <- 0
+      Bvec <- cumsum(Btj)
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, alphahat, gammahat, muhat, betahat)) *
+        (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], alphahat, gammahat, muhat,
+                                                 betahat)) * (Avec[m] - Bvec[m])
+      return(c(AD, CvM, A))
+    }
+    betaRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(rbeta(n, alpha, gamma) * (bBeta - aBeta) + aBeta,
+                              tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(alpha0) || is.null(gamma0)) {
+      alpha <- alphaML
+      gamma <- gammaML
+    } else {
+      alpha <- alpha0
+      gamma <- gamma0
+    }
+    bts <- boot(data.frame(times, cens), betaStat, R = BS, sim = "parametric",
+                ran.gen = betaRnd, mle = c(alpha, gamma))
   }
-  KStest <- KScens(times, cens, distr, betaLimits, igumb, params0 = params0)
-  KS <- as.vector(KStest$Test[1])
-  KSp <- as.vector(KStest$Test[2])
-  CvMtest <- CvMcens(times, cens, distr, betaLimits, igumb, BS = BS,
-                     params0 = params0)
-  CvM <- as.vector(CvMtest$Test[1])
-  CvMp <- as.vector(CvMtest$Test[2])
-  ADtest <- ADcens(times, cens, distr, betaLimits, igumb, BS = BS,
-                   params0 = params0)
-  AD <- as.vector(ADtest$Test[1])
-  ADp <- as.vector(ADtest$Test[2])
+  KS <- bts$t0[3]
+  KSp <- (sum(bts$t[, 3] > bts$t0[3]) + 1) / (bts$R + 1)
+  CvM <- bts$t0[2]
+  CvMp <- (sum(bts$t[, 2] > bts$t0[2]) + 1) / (bts$R + 1)
+  AD <- bts$t0[1]
+  ADp <- (sum(bts$t[, 1] > bts$t0[1]) + 1) / (bts$R + 1)
   if (all(sapply(params0, is.null))) {
     output <- list(Distribution = distr,
                    Test = c(KS = KS, CvM = CvM, AD = AD),
                    pval = c(KS = KSp, CvM = CvMp, AD = ADp),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML),
+                                 location = muML, scale = betaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
@@ -177,7 +807,7 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
                    Test = c(KS = KS, CvM = CvM, AD = AD),
                    pval = c(KS = KSp, CvM = CvMp, AD = ADp),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML),
+                                 location = muML, scale = betaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
