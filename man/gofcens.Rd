@@ -15,7 +15,8 @@
                   "lognormal", "logistic", "loglogistic", "beta"),
         betaLimits = c(0, 1), igumb = c(10, 10), BS = 999,
         params0 = list(shape = NULL, shape2 = NULL, location = NULL,
-                       scale = NULL), ...)
+                       scale = NULL),
+        tol = 1e-04, ...)
 \method{gofcens}{formula}(formula, data,...)
 }
 \arguments{
@@ -38,6 +39,7 @@
                  By default, parameters are set to \code{NULL} and estimated with
                  the maximum likelihood method. This argument is only considered,
                  if all parameters of the studied distribution are specified.}
+  \item{tol}{Precision of survival times.}
   \item{formula}{A formula with a numeric vector as response (which assumes no censoring) or \code{Surv} object.}
   \item{data}{Data frame for variables in \code{formula}.}
   \item{\dots}{Additional arguments.}
