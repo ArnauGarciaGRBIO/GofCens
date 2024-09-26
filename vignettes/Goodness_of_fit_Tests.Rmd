@@ -31,6 +31,8 @@ The Kolmogorov-Smirnov test is implemeted using a theoretical method and bootstr
 set.seed(123)
 survt <- round(rlnorm(300, 2, 1), 2)
 censt <- round(rexp(300, 1 / 20), 2)
+times <- pmin(survt, censt)
+delta <- as.numeric(survt <= censt)
 KScens(times, delta, distr = "lognormal")
 ```
 

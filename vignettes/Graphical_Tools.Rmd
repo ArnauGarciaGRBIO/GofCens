@@ -28,6 +28,11 @@ Several graphical tools are implemented to analyze the goodness of fit.
 The `probPlot()` function allows the user to assess graphically how well any of the distributions fit to a sample of complete or right-censored survival times.
 
 ```{r}
+set.seed(123)
+survt <- round(rlnorm(300, 2, 1), 2)
+censt <- round(rexp(300, 1 / 20), 2)
+times <- pmin(survt, censt)
+delta <- as.numeric(survt <= censt)
 probPlot(times, delta, distr = "lognormal", prnt = FALSE, cex.lab = 1.3)
 ```
 
