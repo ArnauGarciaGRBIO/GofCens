@@ -474,7 +474,8 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                                        location = muML, scale = betaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
-                   aic = aic, bic = bic)
+                   aic = aic, bic = bic,
+                   BS = BS)
   } else {
     output <- list(Distribution = distr,
                    Hypothesis = hypo,
@@ -483,7 +484,8 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                                        location = muML, scale = betaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
-                   aic = aic, bic = bic)
+                   aic = aic, bic = bic,
+                   BS = BS)
   }
   class(output) <- "CvMcens"
   output

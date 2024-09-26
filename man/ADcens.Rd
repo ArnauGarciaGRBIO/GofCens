@@ -65,6 +65,7 @@ An object of class \code{"ADcens"} is a list containing the following components
   \item{\code{StdErrors}}{Vector containing the estimated standard errors.}
   \item{\code{aic}}{The Akaike information criterion.}
   \item{\code{bic}}{The so-called BIC or SBC (Schwarz Bayesian criterion).}
+  \item{\code{BS}}{The number of bootstrap samples used.}
 }
 
 \references{

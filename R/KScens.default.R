@@ -50,6 +50,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
     beta0 <- params0$scale
     alphaML <- gammaML <- muML <- betaML <- NULL
     alphaSE <- gammaSE <- muSE <- betaSE <- NULL
+    alphahat <- gammahat <- muhat <- betahat <- NULL
     aic <- bic <- NULL
     censKM <- survfit(Surv(times, 1 - cens) ~ 1)
     if (distr == "exponential") {
@@ -669,7 +670,8 @@ KScens.default <- function(times, cens = rep(1, length(times)),
                                    location = muML, scale = betaML),
                      StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                    locationSE = muSE, scaleSE = betaSE),
-                     aic = aic, bic = bic)
+                     aic = aic, bic = bic,
+                     BS = BS)
     } else {
       output <- list(Distribution = distr,
                      Hypothesis = hypo,
@@ -678,7 +680,8 @@ KScens.default <- function(times, cens = rep(1, length(times)),
                                    location = muML, scale = betaML),
                      StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                    locationSE = muSE, scaleSE = betaSE),
-                     aic = aic, bic = bic)
+                     aic = aic, bic = bic,
+                     BS = BS)
     }
 
   } else {
@@ -874,7 +877,8 @@ KScens.default <- function(times, cens = rep(1, length(times)),
                                    location = muML, scale = betaML),
                      StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                    locationSE = muSE, scaleSE = betaSE),
-                     aic = aic, bic = bic)
+                     aic = aic, bic = bic,
+                     BS = 0)
     } else {
       output <- list(Distribution = distr,
                      Hypothesis = hypo,
@@ -884,7 +888,8 @@ KScens.default <- function(times, cens = rep(1, length(times)),
                                    location = muML, scale = betaML),
                      StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                    locationSE = muSE, scaleSE = betaSE),
-                     aic = aic, bic = bic)
+                     aic = aic, bic = bic,
+                     BS = 0)
     }
   }
   class(output) <- "KScens"

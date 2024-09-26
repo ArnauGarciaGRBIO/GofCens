@@ -4,7 +4,7 @@
 \description{Printing method for \code{ADcens} object.}
 \usage{
 \method{print}{ADcens}(x, prnt = TRUE, outp = c("list", "table"),  degs = 3, print.AIC = TRUE,
-                         print.BIC = TRUE, ...)
+                         print.BIC = TRUE, print.infoBoot = FALSE, ...)
 }
 \arguments{
   \item{x}{An object of class \code{ADcens}.}
@@ -14,6 +14,7 @@
     results of the output.}
   \item{print.AIC}{Logical to indicate if the AIC of the model should be printed. Default is \code{TRUE}}
   \item{print.BIC}{Logical to indicate if the BIC of the model should be printed. Default is \code{TRUE}}
+  \item{print.infoBoot}{Logical to indicate if the number of bootstrap samples used should be printed. Default is \code{FALSE}}
   \item{\dots}{Additional arguments.}
 }
 
@@ -28,6 +29,7 @@ If \code{prnt = TRUE}, a list or table (if \code{outp = "table"}) containing the
   \item{\code{StdErrors}}{Vector containing the estimated standard errors.}
   \item{\code{aic}}{The Akaike information criterion.}
   \item{\code{bic}}{The so-called BIC or SBC (Schwarz Bayesian criterion).}
+  \item{\code{BS}}{The number of bootstrap samples used.}
 The list is also returned invisibly.
 }
 

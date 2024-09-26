@@ -528,7 +528,8 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
                    Cellnumbers = c("Original" = Morig, "Final" = Mout),
-                   aic = aic, bic = bic)
+                   aic = aic, bic = bic,
+                   BS = BS)
   } else {
     output <- list(Distribution = distr,
                    Hypothesis = hypo,
@@ -538,7 +539,8 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
                    Cellnumbers = c("Original" = Morig, "Final" = Mout),
-                   aic = aic, bic = bic)
+                   aic = aic, bic = bic,
+                   BS = BS)
   }
   class(output) <- "chisqcens"
   output

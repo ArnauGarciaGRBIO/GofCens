@@ -1,5 +1,6 @@
 print.chisqcens <- function(x, prnt = TRUE, outp = c("list", "table"), degs = 3,
-                            print.AIC = TRUE, print.BIC = TRUE,...) {
+                            print.AIC = TRUE, print.BIC = TRUE,
+                            print.infoBoot = FALSE, ...) {
   outp <- match.arg(outp)
   if (prnt && !outp %in% c("list", "table")) {
     stop("Invalid value of outp. Use 'table' or 'list'.")
@@ -75,6 +76,10 @@ print.chisqcens <- function(x, prnt = TRUE, outp = c("list", "table"), degs = 3,
         cat( "BIC:", round(x$bic, degs), "\n")
       }
       cat("\n")
+      if(print.infoBoot){
+        cat( "Number of bootstrap samples:", x$BS, "\n")
+        cat("\n")
+      }
     } else {
       cat("Distribution:", x$Distribution, "\n")
       if (!is.null(x$Hypothesis)) {
@@ -105,6 +110,10 @@ print.chisqcens <- function(x, prnt = TRUE, outp = c("list", "table"), degs = 3,
         cat( "BIC:", round(x$bic, degs), "\n")
       }
       cat("\n")
+      if(print.infoBoot){
+        cat( "Number of bootstrap samples:", x$BS, "\n")
+        cat("\n")
+      }
     }
   }
   invisible(x)

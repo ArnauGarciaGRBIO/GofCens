@@ -73,6 +73,7 @@ An object of class \code{"chisqcens"} is a list containing the following compone
                            introduced by the user and the final cell number used.}
   \item{\code{aic}}{The Akaike information criterion.}
   \item{\code{bic}}{The so-called BIC or SBC (Schwarz Bayesian criterion).}
+  \item{\code{BS}}{The number of bootstrap samples used.}
 }
 
 \references{

@@ -49,6 +49,8 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
   beta0 <- params0$scale
   alphaML <- gammaML <- muML <- betaML <- NULL
   alphaSE <- gammaSE <- muSE <- betaSE <- NULL
+  alphahat <- gammahat <- muhat <- betahat <- NULL
+  A <- NULL
   aic <- bic <- NULL
   censKM <- survfit(Surv(times, 1 - cens) ~ 1)
   if (distr == "exponential") {
@@ -800,7 +802,8 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
                                  location = muML, scale = betaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
-                   aic = aic, bic = bic)
+                   aic = aic, bic = bic,
+                   BS = BS)
   } else {
     output <- list(Distribution = distr,
                    Hypothesis = hypo,
@@ -810,7 +813,8 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
                                  location = muML, scale = betaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE),
-                   aic = aic, bic = bic)
+                   aic = aic, bic = bic,
+                   BS = BS)
   }
   class(output) <- "gofcens"
   output
