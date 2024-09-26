@@ -19,7 +19,8 @@
          m = NULL, betaLimits = c(0, 1), igumb = c(10, 10),
          prnt = TRUE, degs = 3,
          params0 = list(shape = NULL, shape2 = NULL,
-                        location = NULL, scale = NULL), print.AIC = TRUE, print.BIC = TRUE, ...)
+                        location = NULL, scale = NULL), print.AIC = TRUE,
+                        print.BIC = TRUE, ...)
 \method{probPlot}{formula}(formula, data, ...)
 }
 
