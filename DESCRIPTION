@@ -1,4 +1,4 @@
-Package: GofCens2
+Package: GofCens
 Type: Package
 Title: Goodness-of-Fit Methods for Complete and Right-Censored Data
 Version: 1.1
@@ -24,6 +24,8 @@ Encoding: UTF-8
 Depends: R (>= 3.5.0), survival, actuar
 Imports: fitdistrplus, grid, ggplot2, gridExtra, survminer, boot, methods
 NeedsCompilation: no
+VignetteBuilder: knitr
+Suggests: knitr, rmarkdown
 Packaged: 2024-07-29
 Author: Klaus Langohr [aut, cre],
   Mireia Besalú [aut],
