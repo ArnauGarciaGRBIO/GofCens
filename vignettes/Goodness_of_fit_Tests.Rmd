@@ -21,40 +21,78 @@ library("GofCens")
 
 # Goodness of fit tests for complete and right-censored data
 
-In the `GofCens`package there are several goodness of fit methods. Let us illustrate how these methods work with different examples.
+Let $T$ denote the time until the occurrence of an event of interest, whose distribution function we denote by $F$. The **GofCens** package offers various goodness-of-fit techniques to assess whether a univariate sample from $T$, either complete or right-censored, i.e., the observed times are smaller than the actual times of interest, comes from a specified (continuous) distribution $F_0(t;\theta)$, where $\theta$ represents a vector of unknown parameters. Formally, the null hypothesis goodness-of-fit test is $H_0: F(t)=F_0(t;\theta)$, $\theta$ representing a vector of unknown parameters. Specifically, the **GofCens** package provides implementations of well-known tests such as the Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests based on the empirical distribution function for complete data and their extensions for right-censored data. Additionally, **GofCens** includes a chi-squared-type test based on the squared differences between observed and expected counts using random cells, with an extension tailored for right-censored data.
 
-## Kolmogorov-Smirnov test
-
-The Kolmogorov-Smirnov test is implemeted using a theoretical method and bootstrapping methods.
+We will illustrate how the functions of the package works using the following simulated survival times. We generate $300$ survival times from a log-normal distribution with location parameter $\mu = 2$ and scale parameter $\beta=1$, i.e. $T\sim LN(2,1)$, and $300$ censoring times from an exponential distribution with scale parameter $\beta=20$, i.e. $C\sim Exp(20)$:
 
 ```{r}
 set.seed(123)
 survt <- round(rlnorm(300, 2, 1), 2)
 censt <- round(rexp(300, 1 / 20), 2)
+```
+
+The observed right-censored survival times, $Y = min(T, C)$, and the corresponding event indicators, $\delta = \boldsymbol{1}\{T \leq C\}$, are created as follows:
+
+```{r}
 times <- pmin(survt, censt)
 delta <- as.numeric(survt <= censt)
+```
+
+In total, $106$ ($35.3\%$) of the survival times of the generated sample are right-censored:
+
+```{r}
+table(delta)
+```
+
+## Kolmogorov-Smirnov test
+
+The Kolmogorov-Smirnov test adapted to right-censored data is implemented in the function `KScens()` of the **GofCens** package. This function provides the observed Kolmogorov-Smirnov statistic adapted to right-censored data and the p-value that can be computed either via the theoretical approximation or via bootstrap methods. 
+
+We run the `KScens()` function to assess the goodness of fit of the log-normal and the Weibull distributions. The p-value obtained with the log-normal distribution is, as expected, quite large ($0.578$), whereas the low p-value ($0.041$) in the second example provides large evidence against the Weibull distribution. 
+
+
+```{r}
 KScens(times, delta, distr = "lognormal")
 ```
 
-We can print it in table format:
+Note that in this second example, with apply the internal function `print.KScens()`, which allows us to change the default list output to a table format (`outp = "table"`).
 
 ```{r}
 set.seed(123)
 print(KScens(times, delta, distr = "weibull"), outp = "table")
 ```
 
+By default the `KScens()` function computes the p-value via bootstrap methods, nonetheless if the argument `boot=FALSE` is used, the computation of the p-value is done using the theoretical approximation. Let us see an example:
+
+```{r}
+KScens(times, delta, distr = "lognormal", boot = FALSE)
+```
+
+
 ##  Cramér-von Mises test 
 
-An example with the generated data is:
+The function `CvMcens()` of the **GofCens** package provides both the observed Cramér-von Mises statistic adapted to right-censored data and the p-value obtained via bootstrap methods.
+
+We run the `CvMcens()` function to assess the goodness of fit of the log-normal and the Weibull distributions, as before. Hence, the null hypotheses in the illustrations remain the same as before, as do the conclusions: we would conclude that the data may come from a log-normal distribution, but not from a Weibull distribution.
 
 ```{r}
 set.seed(123)
 CvMcens(times, delta, distr = "lognormal")
 ```
 
+And for the Weibull distribution:
+
+```{r}
+set.seed(123)
+CvMcens(times, delta, distr = "weibull")
+```
+
+
 ##  Anderson-Darling
 
-An example printing with table format:
+The function `ADcens()` of the **GofCens** package provides both the observed Anderson-Darling statistic adapted to right-censored data and the p-value obtained via bootstrap methods.
+
+For example, we can test the null hypothesis that the data come from a log-normal distribution with location and scale parameters equal to $\mu=2$ and $\beta=1.5$, respectively. In this case, as shown below, the Anderson-Darling test clearly rejects the null hypothesis ($p = 0.001$). Note that the output now displays both the parameters of the null hypothesis and the estimated parameters
 
 ```{r}
 set.seed(123)
@@ -64,20 +102,64 @@ print(ADcens(times, delta, distr = "lognormal",
 
 ## Gofcens function
 
-There is a function implemented computing the three p-values for the three previous tests simultaneously:
+There is a function implemented computing the three p-values for the three previous tests simultaneously by means of bootstrapping methods. The function `gofcens()` computes the test statistics of the Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests adapted to right-censored data and returns the corresponding p values computed via bootstrap methods.
+
+Let us expose a couple of examples with the `gofcens()` function:
 
 ```{r}
 set.seed(123)
 gofcens(times, delta, distr = "lognormal")
 ```
 
+Now we use the function to assess whether the Weibull distribution fits the data, and we print the results in the table format.
+
+```{r}
+set.seed(123)
+print(gofcens(times, delta, distr = "weibull"), outp = "table")
+```
+
+
 ## Chi-squared type test
 
-Chi-squared type tests are also implemented by means of bootstrapping methods.
+Chi-squared type tests are also implemented, the function `chisqcens()` of the **GofCens** package uses bootstrap techniques to compute the p-value.
+
+In this function two random cell numbers are provided: the number chosen by the user (Original) and the final number (Final), which might be smaller than the previous one because of right-censored data. For example, in the following illustrations with the data of the right-censored sample from the log-normal distribution, we choose $M = 8$ random cells, but as shown in the output, the number is reduced to $M = 7$.
 
 ```{r}
 set.seed(123)
 chisqcens(times, delta, M = 8, distr = "lognormal")
-
 ```
 
+Now we use the function for the Weibull distribution and we print it in the table format.
+
+```{r}
+set.seed(123)
+print(chisqcens(times, delta, M = 8, distr = "weibull"), outp = "table")
+```
+
+Again, based on the outputs, we would choose the log-normal distribution instead of the Weibull distribution, because its value of the test statistic is clearly smaller and the p-value is far larger.
+
+## Real data example: Survival times of retired NBA players
+
+In this section, we apply the above functions of the **GofCens** package to determine which parametric model fits best to the survival times of former NBA players.
+
+The data frame *nba* comes with the **GofCens** package and contains the survival times (variable `survtime`) of all $3962$ former players of the of the National Basketball Association (NBA) until July 2019. Survival times are measured as the elapsed time (in years) from the end of the NBA career until either death (`cens == 1`) or July 31, 2019 (`cens == 1`). By this date, $864$ ($21.8\%$) of the former players had died with uncensored post-NBA survival times ranging from a few days until nearly 70 years.
+
+We apply the `gofcens()` function to the logistic and normal distributions in order to see the results of the Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests. To reduce the computation times, which would otherwise be very long, we first select a random sample of survival times of size $n=500$. 
+
+```{r}
+data("nba")
+set.seed(123)
+nbasamp <- nba[sample(nrow(nba), 500), ]
+set.seed(123)
+gofcens(Surv(survtime, cens) ~ 1, nbasamp, distr = "logistic")
+```
+
+Now for the normal distribution:
+
+```{r}
+set.seed(123)
+gofcens(Surv(survtime, cens) ~ 1, nbasamp, distr = "normal")
+```
+
+The test statistics of all three tests are smaller in the case of the logistic distribution and the corresponding p-values are larger. Thus, we would select the logistic distribution over the normal distribution.
