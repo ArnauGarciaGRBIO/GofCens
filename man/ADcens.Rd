@@ -90,6 +90,8 @@ An object of class \code{"ADcens"} is a list containing the following components
 set.seed(123)
 ADcens(times = rweibull(100, 12, scale = 4), distr = "weibull",
        BS = 199)
+print(ADcens(times = rweibull(100, 12, scale = 4), distr = "exponential",
+       BS = 199), outp = "table", print.BIC = FALSE, print.infoBoot = TRUE)
 
 \dontrun{
 # Censored data

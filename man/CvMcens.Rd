@@ -98,6 +98,8 @@ for censored data.} In: Biometrika, 63 (2) (1976), 291-298.
 set.seed(123)
 CvMcens(times = rweibull(100, 12, scale = 4), distr = "weibull",
         BS = 199)
+print(CvMcens(times = rweibull(100, 12, scale = 4), distr = "normal",
+        BS = 99), degs = 4, print.AIC = FALSE, print.BIC = FALSE)
 
 \dontrun{
 # Censored data

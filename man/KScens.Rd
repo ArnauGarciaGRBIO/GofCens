@@ -105,7 +105,6 @@ to arbitrarily right-censored data}. In: Biometrics 36 (1980), 607-625.
 set.seed(123)
 KScens(times = rweibull(1000, 12, scale = 4), distr = "weibull")
 
-
 # Censored data with bootstrapping
 KScens(Surv(time, status) ~ 1, colon, distr = "norm")
 
@@ -113,6 +112,7 @@ KScens(Surv(time, status) ~ 1, colon, distr = "norm")
 KScens(Surv(time, status) ~ 1, colon, distr = "norm", boot = FALSE)
 
 data(nba)
-print(KScens(Surv(survtime, cens) ~ 1, nba, "logis"), degs = 2)
-KScens(Surv(survtime, cens) ~ 1, nba, "beta", betaLimits = c(0, 80))
+print(KScens(Surv(survtime, cens) ~ 1, nba, "logis", BS = 199), degs = 2)
+KScens(Surv(survtime, cens) ~ 1, nba, "beta", betaLimits = c(0, 80),
+       boot = FALSE)
 }

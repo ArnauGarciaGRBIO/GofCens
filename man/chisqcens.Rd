@@ -87,6 +87,8 @@ An object of class \code{"chisqcens"} is a list containing the following compone
 set.seed(123)
 chisqcens(times = rgumbel(100, 12, scale = 4), M = 8, distr = "gumbel",
           BS = 99)
+print(chisqcens(times = rlogis(100, 20, scale = 3), M = 8, distr = "loglogistic",
+          BS = 105), print.AIC = FALSE, print.infoBoot = TRUE)
 
 \dontrun{
 # Censored data

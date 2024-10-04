@@ -38,10 +38,10 @@ The list is also returned invisibly.
 \examples{
 # List output
 set.seed(123)
-KScens(times = rweibull(1000, 12, scale = 4), distr = "weibull")
+KScens(times = rweibull(100, 12, scale = 4), distr = "weibull")
 
 # Table output
 set.seed(123)
-print(KScens(times = rweibull(1000, 12, scale = 4), distr = "weibull"),
+print(KScens(times = rweibull(100, 12, scale = 4), distr = "weibull"),
       outp = "table")
 }

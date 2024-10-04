@@ -96,6 +96,8 @@ for censored data.} In: Biometrika, 63 (2) (1976), 291-298.
 # Complete data
 set.seed(123)
 gofcens(times = rweibull(100, 12, scale = 4), distr = "weibull", BS = 499)
+print(gofcens(times = rweibull(100, 12, scale = 4), distr = "exponential"),
+              outp = "table", print.infoBoot = TRUE)
 
 # Censored data
 data(colon)
