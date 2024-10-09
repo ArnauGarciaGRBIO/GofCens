@@ -60,7 +60,8 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("gumbel" %in% distributions) {
     tryCatch({
-      fitGumb <- fitdistcens(dd, "gumbel", start = list(alpha = 0, scale = 3))
+      fitGumb <- fitdistcens(dd, "gumbel",
+                             start = list(alpha = igumb[1], scale = igumb[2]))
       locGumb <- fitGumb$estimate[1]
       scaleGumb <- fitGumb$estimate[2]
       params$gumbel <- c(locGumb, scaleGumb)
