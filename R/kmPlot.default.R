@@ -1,5 +1,6 @@
 kmPlot.default <- function(times, cens = rep(1, length(times)),
-                           distr = "all6", colour = 1, betaLimits = c(0, 1),
+                           distr = "all6", colour = c("black","blue","cornflowerblue"),
+                           betaLimits = c(0, 1),
                            igumb = c(10, 10), ggp = FALSE, m = NULL,
                            prnt = TRUE, degs = 3, print.AIC = TRUE,
                            print.BIC = TRUE, ...) {
