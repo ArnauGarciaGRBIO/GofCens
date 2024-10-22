@@ -1,6 +1,6 @@
 export("chisqcens", "cumhazPlot", "gofcens", "KScens","CvMcens","ADcens", "probPlot", "kmPlot")
 
-import("fitdistrplus", "grid", "ggplot2", "survminer", "methods")
+import("fitdistrplus", "grid", "ggplot2", "methods")
 importFrom("survival", "Surv", "is.Surv", "survreg", "survfit")
 importFrom("actuar", "dgumbel", "pgumbel", "qgumbel", "rgumbel",
            "dllogis", "pllogis", "qllogis", "rllogis")
