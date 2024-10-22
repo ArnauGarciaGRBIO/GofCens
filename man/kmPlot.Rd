@@ -31,7 +31,9 @@
     the exponential (\code{"exponential"})
     and the beta (\code{"beta"}) distribution. Default is \code{"all6"} and
     includes the fisrt 6 listed which are the most used distributions.}
-  \item{colour}{Vector indicating the colours of the displayed plots.}
+  \item{colour}{Vector with three components indicating the colours of the
+    displayed plots. The first element is for the survival curve, the second
+    for the Kaplan-Meier curve, and the last one for the confidence intervals.}
   \item{betaLimits}{Two-components vector with the lower and upper bounds of the
     Beta distribution. This argument is only required, if the beta
     distribution is considered.}

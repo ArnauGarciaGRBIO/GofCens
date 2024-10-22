@@ -22,7 +22,7 @@ Description: Graphical tools and goodness-of-fit tests for complete and right-ce
 License: GPL (>= 2)
 Encoding: UTF-8
 Depends: R (>= 3.5.0), survival, actuar
-Imports: fitdistrplus, grid, ggplot2, gridExtra, survminer, boot, methods
+Imports: fitdistrplus, grid, ggplot2, gridExtra, boot, methods
 NeedsCompilation: no
 VignetteBuilder: knitr
 Suggests: knitr, rmarkdown

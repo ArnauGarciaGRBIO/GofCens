@@ -10,9 +10,9 @@ plot.kmPlot <- function(x, ...) {
     layout(x$m)
     par(pch = 16, las = 1, mar = c(4, 4.5, 2, 1), font.lab = 4, ...)
     for (i in x$distributions) {
-      plot(x$survKM, col = x$colour[1], xlab = "Time",
+      plot(x$survKM, col = c(x$colour[2], x$colour[3], x$colour[3]), xlab = "Time",
            ylab = expression(bolditalic(hat(S)(t))), main = x$titl[[i]])
-      lines(x$sqtime, x$srvline[[i]])
+      lines(x$sqtime, x$srvline[[i]], col = x$colour[1])
     }
   } else {
     plolis <- vector("list", length(x$distributions))
@@ -41,10 +41,10 @@ plot.kmPlot <- function(x, ...) {
               plot.title = element_text(hjust = 0.5),
               axis.title = element_text(size = 8),
               axis.text = element_text(size = 6)
-            ) #+
-            #geom_point(aes(x, y), size = 0.5, data = tmpdat) +
-            #geom_line(aes(x, y), data = tmpdat, linewidth = 0.5,
-            #          color = x$colour[1])
+            ) +
+            geom_point(aes(x, y), size = 0.5, data = tmpdat) +
+            geom_line(aes(x, y), data = tmpdat, linewidth = 0.5,
+                      color = x$colour[1])
         })
       }
     }

@@ -10,7 +10,6 @@ importFrom("stats", "coefficients", "ecdf", "pbeta", "pexp", "plnorm",
            "plogis", "pnorm", "punif", "pweibull", "qbeta", "qexp",
            "qlnorm", "qlogis", "qnorm", "quantile", "qweibull", "time", "rbeta", "rexp",
            "rlnorm", "rlogis", "rnorm", "runif", "rweibull", "model.extract")
-importFrom("survminer", "ggsurvplot")
 importFrom("boot", "boot")
 importFrom("methods", "is")
 
