@@ -101,7 +101,7 @@ The **GofCens** package includes a function to graphically compare the Kaplan-Me
 For this purpose, each parametric estimation is individually added to the Kaplan-Meier estimator of $S(t)$. Likewise the `cumhazPlot()` function, this is done by default for the Weibull, Gumbel, log-logistic, logistic, log-normal, and normal distributions. Additionally, users have the option to choose the exponential and beta distributions. By default, the plots are generated using the **graphics** package, but setting the argument `ggp = TRUE` allows for the use of the **ggplot2** package. With both options, the pointwise $95\%$ confidence intervals are plotted.
 
 ```{r}
-kmPlot(times, delta, colour = "blue", ggp = TRUE, prnt = FALSE)
+kmPlot(times, delta, ggp = TRUE, prnt = FALSE)
 ```
 
 As expected, the log-normal distribution exhibits the best fit to the data. Nevertheless, based on the plots in this figure one might also consider the log-logistic distribution as a parametric model that fits well to the sample data.
