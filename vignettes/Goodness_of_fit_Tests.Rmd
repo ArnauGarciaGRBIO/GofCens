@@ -48,7 +48,7 @@ table(delta)
 
 The Kolmogorov-Smirnov test adapted to right-censored data is implemented in the function `KScens()` of the **GofCens** package. This function provides the observed Kolmogorov-Smirnov statistic adapted to right-censored data and the p-value that can be computed either via the theoretical approximation or via bootstrap methods. 
 
-We run the `KScens()` function to assess the goodness of fit of the log-normal and the Weibull distributions. The p-value obtained with the log-normal distribution is, as expected, quite large ($0.578$), whereas the low p-value ($0.041$) in the second example provides large evidence against the Weibull distribution. 
+We run the `KScens()` function to assess the goodness of fit of the log-normal and the Weibull distributions. The p-value obtained with the log-normal distribution is, as expected, quite large, whereas the low p-value in the second example provides large evidence against the Weibull distribution. 
 
 
 ```{r}
@@ -92,7 +92,7 @@ CvMcens(times, delta, distr = "weibull")
 
 The function `ADcens()` of the **GofCens** package provides both the observed Anderson-Darling statistic adapted to right-censored data and the p-value obtained via bootstrap methods.
 
-For example, we can test the null hypothesis that the data come from a log-normal distribution with location and scale parameters equal to $\mu=2$ and $\beta=1.5$, respectively. In this case, as shown below, the Anderson-Darling test clearly rejects the null hypothesis ($p = 0.001$). Note that the output now displays both the parameters of the null hypothesis and the estimated parameters
+For example, we can test the null hypothesis that the data come from a log-normal distribution with location and scale parameters equal to $\mu=2$ and $\beta=1.5$, respectively. In this case, as shown below, the Anderson-Darling test clearly rejects the null hypothesis. Note that the output now displays both the parameters of the null hypothesis and the estimated parameters
 
 ```{r}
 set.seed(123)
