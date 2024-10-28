@@ -158,12 +158,9 @@ p-value that can be computed either via the theoretical approximation or
 via bootstrap methods.</p>
 <p>We run the <code><a href="../reference/KScens.html">KScens()</a></code> function to assess the goodness of
 fit of the log-normal and the Weibull distributions. The p-value
-obtained with the log-normal distribution is, as expected, quite large
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.578</mn><annotation encoding="application/x-tex">0.578</annotation></semantics></math>),
-whereas the low p-value
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.041</mn><annotation encoding="application/x-tex">0.041</annotation></semantics></math>)
-in the second example provides large evidence against the Weibull
-distribution.</p>
+obtained with the log-normal distribution is, as expected, quite large,
+whereas the low p-value in the second example provides large evidence
+against the Weibull distribution.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/KScens.html">KScens</a></span><span class="op">(</span><span class="va">times</span>, <span class="va">delta</span>, distr <span class="op">=</span> <span class="st">"lognormal"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: lognormal </span></span>
@@ -278,10 +275,9 @@ a log-normal distribution with location and scale parameters equal to
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>=</mo><mn>1.5</mn></mrow><annotation encoding="application/x-tex">\beta=1.5</annotation></semantics></math>,
 respectively. In this case, as shown below, the Anderson-Darling test
-clearly rejects the null hypothesis
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.001</mn></mrow><annotation encoding="application/x-tex">p = 0.001</annotation></semantics></math>).
-Note that the output now displays both the parameters of the null
-hypothesis and the estimated parameters</p>
+clearly rejects the null hypothesis. Note that the output now displays
+both the parameters of the null hypothesis and the estimated
+parameters</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/ADcens.html">ADcens</a></span><span class="op">(</span><span class="va">times</span>, <span class="va">delta</span>, distr <span class="op">=</span> <span class="st">"lognormal"</span>, </span>
