@@ -8,9 +8,9 @@
 <!-- badges: end -->
 
 The **GofCens** package include the following graphical tools and goodness-of-fit tests for complete and right-censored data: 
-- Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests, which use the empirical distribution function for complete data and are extended for right-censored data.
-- Generalized chi-squared-type test, which is based on the squared differences between observed and expected counts using random cells with right-censored data.
-- A series of graphical tools such as probability or cumulative hazard plots to guide the decision about the most suitable parametric model for the data.
+* Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests, which use the empirical distribution function for complete data and are extended for right-censored data.
+* Generalized chi-squared-type test, which is based on the squared differences between observed and expected counts using random cells with right-censored data.
+* A series of graphical tools such as probability or cumulative hazard plots to guide the decision about the most suitable parametric model for the data.
 
 ## Installation
 **GofCens** can be installed from [CRAN](https://cran.r-project.org/): 
