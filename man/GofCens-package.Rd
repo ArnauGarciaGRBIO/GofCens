@@ -41,8 +41,8 @@
   \tabular{ll}{
     Package: \tab GofCens\cr
     Type: \tab Package\cr
-    Version: \tab 1.1\cr
-    Date: \tab 2024-07-29\cr
+    Version: \tab 1.2\cr
+    Date: \tab 2024-10-25\cr
     License: \tab GPL (>= 2)\cr}
 }
 \author{Klaus Langohr, Mireia Besalú, Matilde Francisco, Arnau Garcia, Guadalupe Gómez

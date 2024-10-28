@@ -103,16 +103,16 @@ to arbitrarily right-censored data}. In: Biometrics 36 (1980), 607-625.
 \examples{
 # Complete data with bootstrapping
 set.seed(123)
-KScens(times = rweibull(100, 12, scale = 4), distr = "weibull")
+KScens(times = rweibull(100, 12, scale = 4), distr = "weibull", BS = 99)
 
 # Censored data with bootstrapping
-KScens(Surv(time, status) ~ 1, colon, distr = "norm")
+KScens(Surv(time, status) ~ 1, colon, distr = "norm", BS = 99)
 
 # Censored data using the modified test
 KScens(Surv(time, status) ~ 1, colon, distr = "norm", boot = FALSE)
 
 data(nba)
-print(KScens(Surv(survtime, cens) ~ 1, nba, "logis", BS = 199), degs = 2)
+print(KScens(Surv(survtime, cens) ~ 1, nba, "logis", boot = FALSE), degs = 2)
 KScens(Surv(survtime, cens) ~ 1, nba, "beta", betaLimits = c(0, 80),
        boot = FALSE)
 }
