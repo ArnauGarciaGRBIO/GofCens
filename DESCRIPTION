@@ -20,6 +20,7 @@ Description: Graphical tools and goodness-of-fit tests for complete and right-ce
                 plots to guide the decision about the most suitable parametric model 
                 for the data.
 License: GPL (>= 2)
+URL: https://arnaugarciagrbio.github.io/GofCens/, https://github.com/ArnauGarciaGRBIO/GofCens
 Encoding: UTF-8
 Depends: R (>= 3.5.0), survival, actuar
 Imports: fitdistrplus, grid, ggplot2, gridExtra, boot, methods
