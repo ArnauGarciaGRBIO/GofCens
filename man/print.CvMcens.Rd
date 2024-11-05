@@ -4,7 +4,7 @@
 \description{Printing method for \code{CvMcens} object.}
 \usage{
 \method{print}{CvMcens}(x, prnt = TRUE, outp = c("list", "table"),  degs = 3, print.AIC = TRUE,
-                         print.BIC = TRUE, print.infoBoot = FALSE, ...)
+      print.BIC = TRUE, print.infoBoot = FALSE, ...)
 }
 \arguments{
   \item{x}{An object of class \code{CvMcens}.}
