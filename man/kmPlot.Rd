@@ -1,10 +1,6 @@
 \name{kmPlot}
 \alias{kmPlot}
-\alias{kmPlot.default}
-\alias{kmPlot.formula}
-\alias{kmPlot.probPlot}
-\alias{kmPlot.probPlot}
-\title{Plot of the Kaplen-Meier and parametric estimations}
+\title{Plot of the Kaplan-Meier and parametric estimations}
 \description{
   Function \code{kmPlot} is a function that generates a plot that combines a
   Kaplan-Meier survival curve and a parametric survival curve in the same graph.

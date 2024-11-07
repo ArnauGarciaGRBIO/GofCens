@@ -1,8 +1,6 @@
 \name{gofcens}
 \alias{gofcens}
-\alias{gofcens.default}
-\alias{gofcens.formula}
-\title{Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling statistics for
+\title{Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests for
        complete and right-censored data}
 \description{
   Function \code{gofcens} computes the Kolmogorov-Smirnov, Cramér-von Mises, and
