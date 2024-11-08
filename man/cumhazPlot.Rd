@@ -1,5 +1,7 @@
 \name{cumhazPlot}
 \alias{cumhazPlot}
+\alias{cumhazPlot.formula}
+\alias{cumhazPlot.default}
 \title{Cumulative hazard plots to check the goodness of fit of parametric models}
 \description{
   Function \code{cumhazPlot} uses the cumulative hazard plot to check if a certain distribution

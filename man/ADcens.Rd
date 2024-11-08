@@ -1,5 +1,7 @@
 \name{ADcens}
 \alias{ADcens}
+\alias{ADcens.formula}
+\alias{ADcens.default}
 \title{Anderson-Darling test for complete and right-censored data}
 \description{
   Function \code{ADcens} computes the Anderson-Darling test statistic and p-value for complete

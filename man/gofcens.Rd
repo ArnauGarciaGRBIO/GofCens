@@ -1,5 +1,7 @@
 \name{gofcens}
 \alias{gofcens}
+\alias{gofcens.formula}
+\alias{gofcens.default}
 \title{Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests for
        complete and right-censored data}
 \description{

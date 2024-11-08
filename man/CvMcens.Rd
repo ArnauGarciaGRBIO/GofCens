@@ -1,5 +1,7 @@
 \name{CvMcens}
 \alias{CvMcens}
+\alias{CvMcens.formula}
+\alias{CvMcens.default}
 \title{Cramér-von Mises test for complete and right-censored data}
 \description{
   Function \code{CvMcens} computes the Cramér-von Mises statistic and p-value for complete

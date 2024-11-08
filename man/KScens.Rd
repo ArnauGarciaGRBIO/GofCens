@@ -1,5 +1,7 @@
 \name{KScens}
 \alias{KScens}
+\alias{KScens.formula}
+\alias{KScens.default}
 \title{Kolmogorov-Smirnov test for complete and right-censored data}
 \description{
   Function \code{KScens} computes the Kolmogorov-Smirnov statistic and p-value for complete

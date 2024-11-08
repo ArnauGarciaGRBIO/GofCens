@@ -1,5 +1,7 @@
 \name{chisqcens}
 \alias{chisqcens}
+\alias{chisqcens.formula}
+\alias{chisqcens.default
 \title{General chi-squared statistics for right-censored data.}
 \description{
   Function \code{chisqcens} computes the general chi-squared test statistic for
