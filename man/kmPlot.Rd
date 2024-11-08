@@ -1,5 +1,7 @@
 \name{kmPlot}
 \alias{kmPlot}
+\alias{kmPlot.formula}
+\alias{kmPlot.default}
 \title{Plot of the Kaplan-Meier and parametric estimations}
 \description{
   Function \code{kmPlot} is a function that generates a plot that combines a
