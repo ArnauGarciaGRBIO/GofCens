@@ -1,8 +1,8 @@
 Package: GofCens
 Type: Package
 Title: Goodness-of-Fit Methods for Complete and Right-Censored Data
-Version: 1.21
-Date: 2024-11-7
+Version: 1.2.1
+Date: 2024-11-9
 Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
                     email = "klaus.langohr@upc.edu"),
             person("Mireia", "Besalú", role = "aut"),
@@ -35,4 +35,4 @@ Author: Klaus Langohr [aut, cre],
   Guadalupe Gómez [aut]
 Maintainer: Klaus Langohr <klaus.langohr@upc.edu>
 Repository: CRAN
-Date/Publication: 2024-11-7
+Date/Publication: 2024-11-9
