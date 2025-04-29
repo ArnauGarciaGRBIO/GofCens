@@ -4,11 +4,16 @@ Title: Goodness-of-Fit Methods for Complete and Right-Censored Data
 Version: 1.2.1
 Date: 2024-11-9
 Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
-                    email = "klaus.langohr@upc.edu"),
-            person("Mireia", "Besalú", role = "aut"),
-            person("Matilde", "Francisco", role = "aut"),
-            person("Arnau", "Garcia", role = "aut"),
-            person("Guadalupe", "Gómez", role = "aut"))
+                    email = "klaus.langohr@upc.edu",
+                    comment = c(ORCID = '0000-0001-7075-9192')),
+            person("Mireia", "Besalú", role = "aut",
+                   comment = c(ORCID = '0000-0003-0473-2404')),
+            person("Matilde", "Francisco", role = "aut",
+                   comment = c(ORCID = '0009-0009-1982-0547')),
+            person("Arnau", "Garcia", role = "aut",
+                   comment = c(ORCID = '0009-0009-7370-6980')),
+            person("Guadalupe", "Gómez", role = "aut",
+                   comment = c(ORCID = '0000-0003-4252-4884')))
 Description: Graphical tools and goodness-of-fit tests for complete and right-censored data:
              1. Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests,
                 which use the empirical distribution function for complete data 
