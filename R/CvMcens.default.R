@@ -89,7 +89,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     }
     beta <- ifelse(is.null(beta0), betaML, beta0)
     bts <- boot(data.frame(times, cens), expStat, R = BS, sim = "parametric",
-                ran.gen = expRnd, mle = 1 / beta)
+                ran.gen = expRnd, mle = 1 / beta, ...)
   }
   if (distr == "gumbel") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -149,7 +149,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), gumbStat, R = BS, sim = "parametric",
-                ran.gen = gumbRnd, mle = c(mu, beta))
+                ran.gen = gumbRnd, mle = c(mu, beta), ...)
   }
   if (distr == "weibull") {
     if (!is.null(alpha0) && !is.null(beta0)) {
@@ -201,7 +201,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), weiStat, R = BS, sim = "parametric",
-                ran.gen = weiRnd, mle = c(alpha, beta))
+                ran.gen = weiRnd, mle = c(alpha, beta), ...)
   }
   if (distr == "normal") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -253,7 +253,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), normStat, R = BS, sim = "parametric",
-                ran.gen = normRnd, mle = c(mu, beta))
+                ran.gen = normRnd, mle = c(mu, beta), ...)
   }
   if (distr == "lognormal") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -305,7 +305,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), lnormStat, R = BS, sim = "parametric",
-                ran.gen = lnormRnd, mle = c(mu, beta))
+                ran.gen = lnormRnd, mle = c(mu, beta), ...)
   }
   if (distr == "logistic") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -357,7 +357,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), logiStat, R = BS, sim = "parametric",
-                ran.gen = logiRnd, mle = c(mu, beta))
+                ran.gen = logiRnd, mle = c(mu, beta), ...)
   }
   if (distr == "loglogistic") {
     if (!is.null(alpha0) && !is.null(beta0)) {
@@ -408,7 +408,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), llogiStat, R = BS, sim = "parametric",
-                ran.gen = llogiRnd, mle = c(alpha, beta))
+                ran.gen = llogiRnd, mle = c(alpha, beta), ...)
   }
   if (distr == "beta") {
     if (!is.null(alpha0) && !is.null(gamma0)) {
@@ -463,7 +463,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       gamma <- gamma0
     }
     bts <- boot(data.frame(times, cens), betaStat, R = BS, sim = "parametric",
-                ran.gen = betaRnd, mle = c(alpha, gamma))
+                ran.gen = betaRnd, mle = c(alpha, gamma), ...)
   }
   CvM <- bts$t0
   pval <- (sum(bts$t[, 1] > bts$t0[1]) + 1) / (bts$R + 1)

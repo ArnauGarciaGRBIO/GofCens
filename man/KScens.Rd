@@ -45,7 +45,8 @@
   \item{data}{Data frame for variables in \code{formula}.}
   \item{boot}{Logical to indicate if the p-value is computed using bootstrapping or using the
               the modified Kolmogorov-Smirnov test (see details). Default is \code{TRUE}.}
-  \item{\dots}{Additional arguments.}
+  \item{\dots}{Additional arguments for the \code{boot} function of the
+    \pkg{boot} package.}
 }
 
 \details{By default the p-value is computed via bootstrapping methods.

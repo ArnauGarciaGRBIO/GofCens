@@ -39,7 +39,8 @@
   \item{tol}{Precision of survival times.}
   \item{formula}{A formula with a numeric vector as response (which assumes no censoring) or \code{Surv} object.}
   \item{data}{Data frame for variables in \code{formula}.}
-  \item{\dots}{Additional arguments.}
+  \item{\dots}{Additional arguments for the \code{boot} function of the
+    \pkg{boot} package.}
 }
 \details{
          Koziol and Green (1976) proposed a Cramér-von
