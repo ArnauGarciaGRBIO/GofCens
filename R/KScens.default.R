@@ -79,13 +79,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -157,13 +157,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -233,13 +233,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -309,13 +309,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -385,13 +385,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -461,13 +461,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -536,13 +536,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -614,13 +614,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         stimes <- survT$time
         m <- length(stimes)
         svbefor <- c(1, survT$surv[-m])
-        aux2 <- numeric(m)
-        for (i in 1:m) {
+        aux2 <- sapply(1:m, function(i) {
           if (sumSurvT$n.censor[i] > 0) {
-            aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                                 (0:(n.censor[i] - 1)))))
+            sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+          } else {
+            0
           }
-        }
+        })
         alfatj <- exp(-c(0, cumsum(aux2))[-m])
         Atj <- sqrt(c(1, alfatj[-m])) *
           log(SofT0(c(0, stimes[-m]), alphahat, gammahat, muhat, betahat) /
@@ -839,13 +839,13 @@ KScens.default <- function(times, cens = rep(1, length(times)),
     stimes <- survT$time
     m <- length(stimes)
     svbefor <- c(1, survT$surv[-m])
-    aux2 <- numeric(m)
-    for (i in 1:m) {
+    aux2 <- sapply(1:m, function(i) {
       if (sumSurvT$n.censor[i] > 0) {
-        aux2[i] <- with(sumSurvT, sum(1 / (n.risk[i] - n.event[i] -
-                                             (0:(n.censor[i] - 1)))))
+        sum(1 / (sumSurvT$n.risk[i] - sumSurvT$n.event[i] - (0:(sumSurvT$n.censor[i] - 1))))
+      } else {
+        0
       }
-    }
+    })
     alfatj <- exp(-c(0, cumsum(aux2))[-m])
     Atj <- sqrt(c(1, alfatj[-m])) *
       log(SofT0(c(0, stimes[-m]), alpha, gamma, mu, beta) /
