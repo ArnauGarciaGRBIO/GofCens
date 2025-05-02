@@ -71,6 +71,7 @@
 \references{
   Peterson Jr, Arthur V. \emph{Expressing the Kaplan-Meier estimator as a function of empirical subsurvival functions}.
   In: Journal of the American Statistical Association 72.360a (1977): 854-858.
+  URL: https://doi.org/10.1080/01621459.1977.10479970
 }
 
 \author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}

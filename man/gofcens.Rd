@@ -74,10 +74,10 @@ An object of class \code{"gofcens"} is a list containing the following component
 
 \references{
 J. A. Koziol and S. B. Green. \emph{A Cramér-von Mises statistic for randomly
-censored data}. In: Biometrika, 63 (3) (1976), 465-474.
+censored data}. In: Biometrika, 63 (3) (1976), 465-474. URL: https://doi.org/10.1093/biomet/63.3.465
 
 A. N. Pettitt and M. A. Stephens. \emph{Modified Cramér-von Mises statistics
-for censored data.} In: Biometrika, 63 (2) (1976), 291-298.
+for censored data.} In: Biometrika, 63 (2) (1976), 291-298. URL: https://doi.org/10.1093/biomet/63.2.291
 }
 \author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 

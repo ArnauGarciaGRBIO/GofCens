@@ -91,7 +91,7 @@ An object of class \code{"KScens"} is a list containing the following components
 
 \references{
 T. R. Fleming et al. \emph{Modified Kolmogorov-Smirnov test procedure with application
-to arbitrarily right-censored data}. In: Biometrics 36 (1980), 607-625.
+to arbitrarily right-censored data}. In: Biometrics 36 (1980), 607-625. URL: https://doi.org/10.2307/2556114
 }
 
 \author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
