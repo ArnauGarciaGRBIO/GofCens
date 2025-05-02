@@ -1,7 +1,7 @@
 cumhazPlot.default <- function(times, cens = rep(1, length(times)),
                                distr = "all6", colour = 1, betaLimits = c(0, 1),
                                igumb = c(10, 10), ggp = FALSE, m = NULL,
-                               prnt = TRUE, degs = 3, print.AIC = TRUE, print.BIC = TRUE, ...) {
+                               prnt = FALSE, degs = 3, print.AIC = TRUE, print.BIC = TRUE, ...) {
   if (!is.numeric(times)) {
     stop("Variable times must be numeric!")
   }
