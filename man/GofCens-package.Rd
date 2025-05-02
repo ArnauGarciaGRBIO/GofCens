@@ -6,16 +6,16 @@
 \description{This package implements both graphical tools and goodness-of-fit
   tests for complete and right-censored data. It has implemented:
     \enumerate{
-      \item Kolmogorov-Smirnov (\link[GofCens]{\code{KScens}}), Cramér-von Mises (\link[GofCens]{\code{CvMcens}}),
-      and Anderson-Darling (\link[GofCens]{\code{ADcens}}) tests, which use the empirical distribution
+      \item Kolmogorov-Smirnov (\code{\link[GofCens]{KScens}}), Cramér-von Mises (\code{\link[GofCens]{CvMcens}}),
+      and Anderson-Darling (\code{\link[GofCens]{ADcens}}) tests, which use the empirical distribution
       function for complete data and are extended for right-censored data.
 
-      \item Generalized chi-squared-type (\link[GofCens]{\code{chisqcens}}) test, which is based
+      \item Generalized chi-squared-type (\code{\link[GofCens]{chisqcens}}) test, which is based
       on the squared differences between observed and expected counts using random
       cells with right-censored data.
 
-      \item A series of graphical tools such as probability (\link[GofCens]{\code{probPlot}})
-      or cumulative hazard (\link[GofCens]{\code{cumhazPlot}}) plots to guide the decision about
+      \item A series of graphical tools such as probability (\code{\link[GofCens]{probPlot}})
+      or cumulative hazard (\code{\link[GofCens]{cumhazPlot}}) plots to guide the decision about
       the most suitable parametric model for the data.
     }
 }
