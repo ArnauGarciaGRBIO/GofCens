@@ -66,39 +66,51 @@ plot.probPlot <- function(x, ...) {
     }
   } else {
     ERx <- ERy <- PPx <- PPy <- QQx <- QQy <- SPx <- SPy <- NULL
-    ggdat <- data.frame(PPx = 1 - x$survTim, PPy = x$theorPP,
-                        QQx = x$tim, QQy = x$theorQQ,
-                        SPx = 2 / pi * asin(sqrt(1 - x$survTim)),
-                        SPy = 2 / pi * asin(sqrt(x$theorPP)),
-                        ERx = x$uPoint, ERy =x$uEstim)
-    PP <- ggplot(data = ggdat, aes(x = PPx, y = PPy)) +
-      geom_point(colour = x$colour[0 %% nCol + 1]) +
-      xlab("Empirical cumulative distribution") +
-      ylab("Theoretical cumulative distribution") +
-      geom_abline(intercept = 0) +
-      annotate("text", label = "P-P plot", x = Inf, y = -Inf, hjust = 1,
-               vjust = -1, size = 6, fontface = "bold")
-    QQ <- ggplot(data = ggdat, aes(x = QQx, y = QQy)) +
-      geom_point(colour = x$colour[1 %% nCol + 1]) +
-      xlab("Sample quantiles") +
-      ylab("Theoretical quantiles") +
-      geom_abline(intercept  =  0) +
-      annotate("text", label = "Q-Q plot", x = Inf, y = -Inf, hjust = 1,
-               vjust = -1, size = 6, fontface = "bold")
-    SP <- ggplot(data = ggdat, aes(x = SPx, y = SPy)) +
-      geom_point(colour = x$colour[2 %% nCol + 1]) +
-      xlab(expression(bold(2 / pi %*% arcsin(hat(F)[n](t)^{1/2})))) +
-      ylab(expression(bold(2 / pi %*% arcsin(hat(F)[0](t)^{1/2})))) +
-      geom_abline(intercept = 0) +
-      annotate("text", label = "SP plot", x = Inf, y = -Inf, hjust = 1,
-               vjust = -1, size = 6, fontface = "bold")
-    ER <- ggplot(data = ggdat, aes(x = ERx, y = ERy)) +
-      geom_point(colour = x$colour[3 %% nCol + 1]) +
-      xlab(expression(hat(F)[u](t))) +
-      ylab(expression(hat(F)[u](paste(hat(F)[0]^{-1})(hat(F)(t))))) +
-      geom_abline(intercept = 0) +
-      annotate("text", label = "ER plot", x = Inf, y = -Inf, hjust = 1,
-               vjust = -1, size = 6, fontface = "bold")
+    #ggdat <- data.frame(PPx = 1 - x$survTim, PPy = x$theorPP,
+    #                    QQx = x$tim, QQy = x$theorQQ,
+    #                    SPx = 2 / pi * asin(sqrt(1 - x$survTim)),
+    #                    SPy = 2 / pi * asin(sqrt(x$theorPP)),
+    #                    ERx = x$uPoint, ERy =x$uEstim)
+    if ("PP" %in% x$plots) {
+      PP <- ggplot(data = data.frame(PPx = 1 - x$survTim, PPy = x$theorPP),
+                   aes(x = PPx, y = PPy)) +
+                  geom_point(colour = x$colour[0 %% nCol + 1]) +
+                  xlab("Empirical cumulative distribution") +
+                  ylab("Theoretical cumulative distribution") +
+                  geom_abline(intercept = 0) +
+                  annotate("text", label = "P-P plot", x = Inf, y = -Inf, hjust = 1,
+                           vjust = -1, size = 6, fontface = "bold")
+    }
+    if ("QQ" %in% x$plots) {
+      QQ <- ggplot(data = data.frame(QQx = x$tim, QQy = x$theorQQ),
+                   aes(x = QQx, y = QQy)) +
+                  geom_point(colour = x$colour[1 %% nCol + 1]) +
+                  xlab("Sample quantiles") +
+                  ylab("Theoretical quantiles") +
+                  geom_abline(intercept  =  0) +
+                  annotate("text", label = "Q-Q plot", x = Inf, y = -Inf, hjust = 1,
+                           vjust = -1, size = 6, fontface = "bold")
+    }
+    if ("SP" %in% x$plots) {
+      SP <- ggplot(data = data.frame(SPx = 2 / pi * asin(sqrt(1 - x$survTim)),
+                                     SPy = 2 / pi * asin(sqrt(x$theorPP))),
+                   aes(x = SPx, y = SPy)) +
+                  geom_point(colour = x$colour[2 %% nCol + 1]) +
+                  xlab(expression(bold(2 / pi %*% arcsin(hat(F)[n](t)^{1/2})))) +
+                  ylab(expression(bold(2 / pi %*% arcsin(hat(F)[0](t)^{1/2})))) +
+                  geom_abline(intercept = 0) +
+                  annotate("text", label = "SP plot", x = Inf, y = -Inf, hjust = 1,
+                           vjust = -1, size = 6, fontface = "bold")
+    }
+    if ("ER" %in% x$plots) {
+      ER <- ggplot(data = data.frame(ERx = x$uPoint, ERy =x$uEstim), aes(x = ERx, y = ERy)) +
+        geom_point(colour = x$colour[3 %% nCol + 1]) +
+        xlab(expression(hat(F)[u](t))) +
+        ylab(expression(hat(F)[u](paste(hat(F)[0]^{-1})(hat(F)(t))))) +
+        geom_abline(intercept = 0) +
+        annotate("text", label = "ER plot", x = Inf, y = -Inf, hjust = 1,
+                 vjust = -1, size = 6, fontface = "bold")
+    }
     plolis <- list(PP, QQ, SP, ER)[c("PP", "QQ", "SP", "ER") %in% x$plots]
     if (x$mtitle) {
       grid.arrange(grobs = plolis, layout_matrix = x$m,
