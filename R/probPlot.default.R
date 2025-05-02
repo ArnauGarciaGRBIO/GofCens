@@ -61,6 +61,8 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
   alphaML <- gammaML <- muML <- betaML <- NULL
   alphaSE <- gammaSE <- muSE <- betaSE <- NULL
   aic <- bic <- NULL
+  theorPP <- NULL
+  theorQQ <- NULL
   if (distr == "exponential") {
     paramsML <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
     muu <- unname(coefficients(paramsML))
@@ -78,8 +80,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
       outp <- list(Distribution = "exponential", Parameters = hypo,
                    Estimates = betaML, StdErrors = betaSE, aic = aic, bic = bic)
     }
-    theorPP <- pexp(tim, rateExp)
-    theorQQ <- qexp(1 - survTim, rateExp)
+    if ("PP" %in% plots) {
+      theorPP <- pexp(tim, rateExp)
+    }
+    if ("QQ" %in% plots){
+      theorQQ <- qexp(1 - survTim, rateExp)
+    }
   }
   if (distr == "gumbel") {
     paramsML <- try(suppressMessages(fitdistcens(dd, "gumbel",
@@ -112,8 +118,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    StdErrors = c(locationSE = muSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
     }
-    theorPP <- pgumbel(tim, locGum, scaleGum)
-    theorQQ <- qgumbel(1 - survTim, locGum, scaleGum)
+    if ("PP" %in% plots) {
+      theorPP <- pgumbel(tim, locGum, scaleGum)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qgumbel(1 - survTim, locGum, scaleGum)
+    }
   }
   if (distr == "weibull") {
     paramsML <- fitdistcens(dd, "weibull")
@@ -139,8 +149,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    StdErrors = c(shapeSE = alphaSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
     }
-    theorPP <- pweibull(tim, shapeWei, scaleWei)
-    theorQQ <- qweibull(1 - survTim, shapeWei, scaleWei)
+    if ("PP" %in% plots) {
+      theorPP <- pweibull(tim, shapeWei, scaleWei)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qweibull(1 - survTim, shapeWei, scaleWei)
+    }
   }
   if (distr == "normal") {
     paramsML <- fitdistcens(dd, "norm")
@@ -166,8 +180,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    StdErrors = c(locationSE = muSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
     }
-    theorPP <- pnorm(tim, locNorm, scaleNorm)
-    theorQQ <- qnorm(1 - survTim, locNorm, scaleNorm)
+    if ("PP" %in% plots) {
+      theorPP <- pnorm(tim, locNorm, scaleNorm)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qnorm(1 - survTim, locNorm, scaleNorm)
+    }
   }
   if (distr == "lognormal") {
     paramsML <- fitdistcens(dd, "lnorm")
@@ -193,8 +211,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    StdErrors = c(locationSE = muSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
     }
-    theorPP <- plnorm(tim, locLnorm, scaleLnorm)
-    theorQQ <- qlnorm(1 - survTim, locLnorm, scaleLnorm)
+    if ("PP" %in% plots) {
+      theorPP <- plnorm(tim, locLnorm, scaleLnorm)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qlnorm(1 - survTim, locLnorm, scaleLnorm)
+    }
   }
   if (distr == "logistic") {
     paramsML <- fitdistcens(dd, "logis")
@@ -220,8 +242,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    StdErrors = c(locationSE = muSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
     }
-    theorPP <- plogis(tim, locLogis, scaleLogis)
-    theorQQ <- qlogis(1 - survTim, locLogis, scaleLogis)
+    if ("PP" %in% plots) {
+      theorPP <- plogis(tim, locLogis, scaleLogis)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qlogis(1 - survTim, locLogis, scaleLogis)
+    }
   }
   if (distr == "loglogistic") {
     paramsML <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
@@ -247,8 +273,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    StdErrors = c(shapeSE = alphaSE, scaleSE = betaSE),
                    aic = aic, bic = bic)
     }
-    theorPP <- pllogis(tim, shapeLoglog, scale = scaleLoglog)
-    theorQQ <- qllogis(1 - survTim, shapeLoglog, scale = scaleLoglog)
+    if ("PP" %in% plots) {
+      theorPP <- pllogis(tim, shapeLoglog, scale = scaleLoglog)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qllogis(1 - survTim, shapeLoglog, scale = scaleLoglog)
+    }
   }
   if (distr == "beta") {
     aBeta <- betaLimits[1]
@@ -278,9 +308,13 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
                    interval.domain = betaLimits,
                    aic = aic, bic = bic)
     }
-    theorPP <- pbeta((tim - aBeta)/(bBeta - aBeta), shape1Beta, shape2Beta)
-    theorQQ <- qbeta((1 - survTim), shape1Beta, shape2Beta) * (bBeta - aBeta)
+    if ("PP" %in% plots) {
+      theorPP <- pbeta((tim - aBeta)/(bBeta - aBeta), shape1Beta, shape2Beta)
+    }
+    if ("QQ" %in% plots) {
+      theorQQ <- qbeta((1 - survTim), shape1Beta, shape2Beta) * (bBeta - aBeta)
                + aBeta
+    }
   }
   output <- list(times = times, cens = cens, distr = distr, plots = plots,
                  colour = colour, mtitle = mtitle, ggp = ggp, m = m,
