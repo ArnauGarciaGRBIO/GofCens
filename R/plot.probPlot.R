@@ -1,13 +1,16 @@
 plot.probPlot <- function(x, ...) {
   index <- 0
-  for (i in 1:length(x$uPoint)) {
-    while (x$theorQQ[i] > x$empiricF[1, index + 1]) {
-      index <- index + 1
-    }
-    if (index != 0) {
-      x$uEstim[i] <- x$empiricF[2, index]
+  if ("ER" %in% x$plots){
+    for (i in 1:length(x$uPoint)) {
+      while (x$theorQQ[i] > x$empiricF[1, index + 1]) {
+        index <- index + 1
+      }
+      if (index != 0) {
+        x$uEstim[i] <- x$empiricF[2, index]
+      }
     }
   }
+
   howmany <- length(x$plots)
   nCol <- length(x$colour)
   if (is.null(x$m)) {
@@ -66,11 +69,7 @@ plot.probPlot <- function(x, ...) {
     }
   } else {
     ERx <- ERy <- PPx <- PPy <- QQx <- QQy <- SPx <- SPy <- NULL
-    #ggdat <- data.frame(PPx = 1 - x$survTim, PPy = x$theorPP,
-    #                    QQx = x$tim, QQy = x$theorQQ,
-    #                    SPx = 2 / pi * asin(sqrt(1 - x$survTim)),
-    #                    SPy = 2 / pi * asin(sqrt(x$theorPP)),
-    #                    ERx = x$uPoint, ERy =x$uEstim)
+    PP <- QQ <- SP <- ER <- NULL
     if ("PP" %in% x$plots) {
       PP <- ggplot(data = data.frame(PPx = 1 - x$survTim, PPy = x$theorPP),
                    aes(x = PPx, y = PPy)) +
