@@ -1,7 +1,12 @@
 cumhazPlot.default <- function(times, cens = rep(1, length(times)),
                                distr = "all6", colour = 1, betaLimits = c(0, 1),
                                igumb = c(10, 10), ggp = FALSE, m = NULL,
-                               prnt = FALSE, degs = 3, print.AIC = TRUE, print.BIC = TRUE, ...) {
+                               prnt = FALSE, degs = 3, print.AIC = TRUE, print.BIC = TRUE,
+                               outp = c("list", "table"), ...) {
+  outp <- match.arg(outp)
+  if (prnt && !outp %in% c("list", "table")) {
+    stop("Invalid value of outp. Use 'table' or 'list'.")
+  }
   if (!is.numeric(times)) {
     stop("Variable times must be numeric!")
   }
@@ -217,7 +222,8 @@ cumhazPlot.default <- function(times, cens = rep(1, length(times)),
                  yscale = yscale, xlabs = xlabs, ylabs = ylabs,
                  regline = regline, titl = titl,colour = colour, ggp = ggp,
                  m = m, betaLimits = betaLimits, igumb = igumb,
-                 prnt = prnt, degs = degs, print.AIC = print.AIC, print.BIC = print.BIC)
+                 prnt = prnt, degs = degs, print.AIC = print.AIC, print.BIC = print.BIC,
+                 outp = outp)
   class(output) <- "cumhazPlot"
   print(output)
   plot(output)
