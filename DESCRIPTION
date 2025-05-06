@@ -1,6 +1,6 @@
 Package: GofCens
 Type: Package
-Title: Goodness-of-Fit Methods for Complete and Right-Censored Data
+Title: Goodness-of-Fit Methods for Right-Censored Data
 Version: 1.2.1
 Date: 2024-11-9
 Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
@@ -14,7 +14,7 @@ Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
                    comment = c(ORCID = '0009-0009-7370-6980')),
             person("Guadalupe", "Gómez", role = "aut",
                    comment = c(ORCID = '0000-0003-4252-4884')))
-Description: Graphical tools and goodness-of-fit tests for complete and right-censored data:
+Description: Graphical tools and goodness-of-fit tests for right-censored data:
              1. Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests,
                 which use the empirical distribution function for complete data 
                 and are extended for right-censored data.
@@ -24,6 +24,9 @@ Description: Graphical tools and goodness-of-fit tests for complete and right-ce
              3. A series of graphical tools such as probability or cumulative hazard 
                 plots to guide the decision about the most suitable parametric model 
                 for the data.
+                These functions share several features as they can handle both 
+                complete and right-censored data, and they provide parameter 
+                estimates for the distributions under study. 
 License: GPL (>= 2)
 URL: https://arnaugarciagrbio.github.io/GofCens/, https://github.com/ArnauGarciaGRBIO/GofCens
 Encoding: UTF-8

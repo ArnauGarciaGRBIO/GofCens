@@ -2,9 +2,10 @@
 \alias{GofCens-package}
 \alias{GofCens}
 \docType{package}
-\title{Goodness-of-Fit Methods for Complete and Right-Censored Data.}
+\title{Goodness-of-Fit Methods for Right-Censored Data.}
 \description{This package implements both graphical tools and goodness-of-fit
-  tests for complete and right-censored data. It has implemented:
+  tests for right-censored data. All functions can handle complete as well as
+  right-censored data. It has implemented:
     \enumerate{
       \item Kolmogorov-Smirnov (\code{\link[GofCens]{KScens}}), Cramér-von Mises (\code{\link[GofCens]{CvMcens}}),
       and Anderson-Darling (\code{\link[GofCens]{ADcens}}) tests, which use the empirical distribution
