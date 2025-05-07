@@ -3,8 +3,9 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                                       "lognormal", "logistic", "loglogistic", "beta"),
                             betaLimits = c(0, 1), igumb = c(10, 10),
                             BS = 999, params0 = list(shape = NULL, shape2 = NULL,
-                                                     location = NULL, scale = NULL),
-                            tol = 1e-04, ...) {
+                                                     location = NULL, scale = NULL,
+                                                     theta = NULL),
+                            tol = 1e-04, start = NULL, ...) {
   if (!is.numeric(times)) {
     stop("Variable times must be numeric!")
   }
@@ -17,7 +18,38 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
   if (!is.list(params0)) {
     stop("params0 must be a list!")
   }
-  distr <- match.arg(distr)
+  #distr <- match.arg(distr)
+  if (distr %in% c("exponential", "gumbel", "weibull", "normal",
+                   "lognormal", "logistic", "loglogistic", "beta")){
+    other <- FALSE
+  } else {
+    other <- TRUE
+    distname <- distr
+    ddistname <- paste("d", distname, sep="")
+    if (!exists(ddistname, mode="function")) {
+      stop(paste("The ", ddistname, " function must be defined"))
+    }
+    pdistname <- paste("p", distname, sep="")
+    if (!exists(pdistname, mode="function")) {
+      stop(paste("The ", pdistname, " function must be defined"))
+    }
+    rdistname <- paste("r", distname, sep="")
+    if (!exists(rdistname, mode="function")) {
+      stop(paste("The ", rdistname, " function must be defined"))
+    }
+    start.arg <- start
+    if(is.vector(start.arg)) {
+      start.arg <- as.list(start.arg)
+    }
+    #arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=pseudodata,
+    #                           distname=distname)
+
+    #check inconsistent parameters
+    #argddistname <- names(formals(ddistname))
+    #hasnodefaultval <- sapply(formals(ddistname), is.name)
+    #arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg,
+    #                               argddistname, hasnodefaultval)
+  }
   if (distr == "beta" && any(times < betaLimits[1] | times > betaLimits[2])) {
     msg <- paste0("Times must be within limits! Try with 'betaLimits = c(",
                   pmax(0, min(times) - 1), ", ", ceiling(max(times) + 1), ")'.")
@@ -39,7 +71,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       stop("Argument 'params0' requires values for both shape parameters.")
     }
   }
-  bool_complete <- !any(cens==0)
+  bool_complete <- all(cens==1)
   rnd <- -log(tol, 10)
   times <- round(pmax(times, tol), rnd)
   dd <- data.frame(left = as.vector(times), right = ifelse(cens == 1, times, NA))
@@ -47,8 +79,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
   gamma0 <- params0$shape2
   mu0 <- params0$location
   beta0 <- params0$scale
-  alphaML <- gammaML <- muML <- betaML <- NULL
-  alphaSE <- gammaSE <- muSE <- betaSE <- NULL
+  #general parameter:
+  theta0 <- params0$theta
+
+  alphaML <- gammaML <- muML <- betaML <- thetaML <- NULL
+  alphaSE <- gammaSE <- muSE <- betaSE <- thetaSE <- NULL
   censKM <- survfit(Surv(times, 1 - cens) ~ 1)
   if (distr == "exponential") {
     if (!is.null(beta0)) {
@@ -556,15 +591,83 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     bts <- boot(data.frame(times, cens), betaStat, R = BS, sim = "parametric",
                 ran.gen = betaRnd, mle = c(alpha, gamma), ...)
   }
+
+  ## Block for a generic distribution
+  if (other) {
+    if (!is.null(theta0)) {
+      hypo <- c(theta = theta0)
+    }
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, distname, start = start)
+    } else {
+      paramsML <- fitdistcens(dd, distname, start = start)
+    }
+    n_params <- length(paramsML$estimate)
+    thetaML <- numeric(n_params)
+    thetaSE <- numeric(n_params)
+    for(i in 1:n_params){
+      thetaML[i] <- unname(paramsML$estimate[i])
+      thetaSE[i] <- unname(paramsML$sd[i])
+    }
+    aic <- paramsML$aic
+    bic <- paramsML$bic
+    otherStat <- function(dat) {
+      if (is.null(theta0)) {
+        dd <- data.frame(left = as.vector(dat$times),
+                         right = ifelse(dat$cens == 1, dat$times, NA))
+        if(bool_complete){
+          paramsBSML <- fitdist(dd$left, distname, start = start)
+        } else {
+          paramsBSML <- fitdistcens(dd, distname, start = start)
+        }
+        thetahat <- numeric(n_params)
+        for(i in 1:n_params){
+          thetahat[i] <- unname(paramsBSML$estimate[i])
+        }
+      } else {
+        thetahat <- theta0
+      }
+      stimes <- sort(unique(dat$times[dat$cens == 1]))
+      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
+      nc <- length(KM)
+      Fn <- c(1 - KM, NA)
+      y0 <- c(do.call(pdistname, c(list(stimes), as.list(thetahat))), 1)
+      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
+                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
+      return(CvM)
+    }
+    otherRnd <- function(dat, mle) {
+      out <- dat
+      n <- nrow(dat)
+      unifn <- runif(n)
+      survtimes <- round(pmax(do.call(rdistname, c(list(n), as.list(mle))),
+                              tol), rnd)
+      censtimes <- as.vector(quantile(censKM, unifn)$quantile)
+      censtimes[is.na(censtimes)] <- Inf
+      out$times <- pmin(survtimes, censtimes)
+      out$cens <- as.numeric(survtimes < censtimes)
+      out
+    }
+    if (is.null(theta0)) {
+      theta <- thetaML
+    } else {
+      theta <- theta0
+    }
+    bts <- boot(data.frame(times, cens), otherStat, R = BS, sim = "parametric",
+                ran.gen = otherRnd, mle = theta, ...)
+  }
+
   CvM <- bts$t0
   pval <- (sum(bts$t[, 1] > bts$t0[1]) + 1) / (bts$R + 1)
   if (all(sapply(params0, is.null))) {
     output <- list(Distribution = distr,
                    Test = c(CvM = CvM, "p-value" = pval),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML),
+                                       location = muML, scale = betaML,
+                                 theta = thetaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
-                                 locationSE = muSE, scaleSE = betaSE),
+                                 locationSE = muSE, scaleSE = betaSE,
+                                 thetaSE = thetaSE),
                    aic = aic, bic = bic,
                    BS = BS)
   } else {
