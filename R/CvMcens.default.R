@@ -39,6 +39,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       stop("Argument 'params0' requires values for both shape parameters.")
     }
   }
+  bool_complete <- !any(cens==0)
   rnd <- -log(tol, 10)
   times <- round(pmax(times, tol), rnd)
   dd <- data.frame(left = as.vector(times), right = ifelse(cens == 1, times, NA))
@@ -53,17 +54,33 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(beta0)) {
       hypo <- c(scale = beta0)
     }
-    paramsML <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
-    muu <- unname(coefficients(paramsML))
-    betaML <- 1 / exp(-muu)
-    betaSE <- sqrt(paramsML$var[1])*exp(muu)
-    aic <- 2 - 2*paramsML$loglik[1]
-    bic <- log(length(times)) - 2*paramsML$loglik[1]
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "exp")
+      muu <- unname(paramsML$estimate)
+      betaML <- 1 / muu
+      betaSE <- sqrt(paramsML$vcov[1])*(1/muu)^2
+      aic <- paramsML$aic
+      bic <- paramsML$bic
+    } else {
+      paramsML <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
+      muu <- unname(coefficients(paramsML))
+      betaML <- 1 / exp(-muu)
+      betaSE <- sqrt(paramsML$var[1])*exp(muu)
+      aic <- 2 - 2*paramsML$loglik[1]
+      bic <- log(length(times)) - 2*paramsML$loglik[1]
+    }
     expStat <- function(dat) {
       if (is.null(beta0)) {
-        muu <- unname(coefficients(survreg(Surv(dat$times, dat$cens) ~ 1,
-                                           dist = "exponential")))
-        betahat <- 1 / exp(-muu)
+        if(bool_complete){
+          dd <- data.frame(left = as.vector(dat$times),
+                           right = ifelse(dat$cens == 1, dat$times, NA))
+          muu <- unname(coefficients(fitdist(dd$left, "exp")))
+          betahat <- 1/muu
+        } else {
+          muu <- unname(coefficients(survreg(Surv(dat$times, dat$cens) ~ 1,
+                                             dist = "exponential")))
+          betahat <- 1 / exp(-muu)
+        }
       } else {
         betahat <- beta0
       }
@@ -95,13 +112,24 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    paramsML <- try(suppressMessages(fitdistcens(dd, "gumbel",
-                                                 start = list(alpha = igumb[1],
-                                                              scale = igumb[2]))),
-                    silent = TRUE)
-    if (is(paramsML, "try-error")) {
-      stop("Function failed to estimate the parameters.\n
+    if(bool_complete){
+      paramsML <- try(suppressMessages(fitdist(dd$left, "gumbel",
+                                                   start = list(alpha = igumb[1],
+                                                                scale = igumb[2]))),
+                      silent = TRUE)
+      if (is(paramsML, "try-error")) {
+        stop("Function failed to estimate the parameters.\n
             Try with other initial values.")
+      } else {
+        paramsML <- try(suppressMessages(fitdistcens(dd, "gumbel",
+                                                     start = list(alpha = igumb[1],
+                                                                  scale = igumb[2]))),
+                        silent = TRUE)
+        if (is(paramsML, "try-error")) {
+          stop("Function failed to estimate the parameters.\n
+            Try with other initial values.")
+        }
+      }
     }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
@@ -113,8 +141,13 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        paramsBSML <- fitdistcens(dd, "gumbel", start = list(alpha = muML,
-                                                             scale = betaML))
+        if(bool_complete){
+          paramsBSML <- fitdist(dd$left, "gumbel", start = list(alpha = muML,
+                                                               scale = betaML))
+        } else {
+          paramsBSML <- fitdistcens(dd, "gumbel", start = list(alpha = muML,
+                                                               scale = betaML))
+        }
         muhat <- unname(paramsBSML$estimate[1])
         betahat <- unname(paramsBSML$estimate[2])
       } else {
@@ -155,7 +188,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(alpha0) && !is.null(beta0)) {
       hypo <- c(shape = alpha0, scale = beta0)
     }
-    paramsML <- fitdistcens(dd, "weibull")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "weibull")
+    } else {
+      paramsML <- fitdistcens(dd, "weibull")
+    }
     alphaML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     alphaSE <- unname(paramsML$sd[1])
@@ -166,7 +203,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(alpha0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        paramsBSML <- fitdistcens(dd, "weibull")
+        if(bool_complete){
+          paramsBSML <- fitdist(dd$left, "weibull")
+        } else {
+          paramsBSML <- fitdistcens(dd, "weibull")
+        }
         alphahat <- unname(paramsBSML$estimate[1])
         betahat <- unname(paramsBSML$estimate[2])
       } else {
@@ -207,7 +248,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    paramsML <- fitdistcens(dd, "norm")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "norm")
+    } else {
+      paramsML <- fitdistcens(dd, "norm")
+    }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     muSE <- unname(paramsML$sd[1])
@@ -218,7 +263,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        paramsBSML <- fitdistcens(dd, "norm")
+        if(bool_complete){
+          paramsBSML <- fitdist(dd$left, "norm")
+        } else {
+          paramsBSML <- fitdistcens(dd, "norm")
+        }
         muhat <- unname(paramsBSML$estimate[1])
         betahat <- unname(paramsBSML$estimate[2])
       } else {
@@ -259,7 +308,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    paramsML <- fitdistcens(dd, "lnorm")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "lnorm")
+    } else {
+      paramsML <- fitdistcens(dd, "lnorm")
+    }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     muSE <- unname(paramsML$sd[1])
@@ -270,7 +323,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        paramsBSML <- fitdistcens(dd, "lnorm")
+        if(bool_complete){
+          paramsBSML <- fitdist(dd$left, "lnorm")
+        } else {
+          paramsBSML <- fitdistcens(dd, "lnorm")
+        }
         muhat <- unname(paramsBSML$estimate[1])
         betahat <- unname(paramsBSML$estimate[2])
       } else {
@@ -311,7 +368,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    paramsML <- fitdistcens(dd, "logis")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "logis")
+    } else {
+      paramsML <- fitdistcens(dd, "logis")
+    }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     muSE <- unname(paramsML$sd[1])
@@ -322,7 +383,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        paramsBSML <- fitdistcens(dd, "logis")
+        if(bool_complete){
+          paramsBSML <- fitdist(dd$left, "logis")
+        } else {
+          paramsBSML <- fitdistcens(dd, "logis")
+        }
         muhat <- unname(paramsBSML$estimate[1])
         betahat <- unname(paramsBSML$estimate[2])
       } else {
@@ -363,19 +428,37 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(alpha0) && !is.null(beta0)) {
       hypo <- c(shape = alpha0, scale = beta0)
     }
-    paramsML <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
-    alphaML <- 1 / exp(unname(paramsML$icoef)[2])
-    betaML <- exp(unname(paramsML$icoef)[1])
-    alphaSE <- sqrt(paramsML$var[4])*exp(-unname(paramsML$icoef)[2])
-    betaSE <- sqrt(paramsML$var[1])*exp(unname(paramsML$icoef)[1])
-    aic <- 2*2 - 2*paramsML$loglik[1]
-    bic <- log(length(times))*2 - 2*paramsML$loglik[1]
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "llogis")
+      alphaML <- unname(coefficients(paramsML))[1]
+      betaML <- unname(coefficients(paramsML))[2]
+      alphaSE <- sqrt(paramsML$vcov[1,1])
+      betaSE <- sqrt(paramsML$vcov[2,2])
+      aic <- paramsML$aic
+      bic <- paramsML$bic
+    } else {
+      paramsML <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
+      alphaML <- 1 / exp(unname(paramsML$icoef)[2])
+      betaML <- exp(unname(paramsML$icoef)[1])
+      alphaSE <- sqrt(paramsML$var[4])*exp(-unname(paramsML$icoef)[2])
+      betaSE <- sqrt(paramsML$var[1])*exp(unname(paramsML$icoef)[1])
+      aic <- 2*2 - 2*paramsML$loglik[1]
+      bic <- log(length(times))*2 - 2*paramsML$loglik[1]
+    }
     llogiStat <- function(dat) {
       if (is.null(alpha0) || is.null(beta0)) {
-        paramsBSML <- unname(survreg(Surv(dat$times, dat$cens) ~ 1,
-                                     dist = "loglogistic")$icoef)
-        alphahat <- 1 / exp(paramsBSML[2])
-        betahat <- exp(paramsBSML[1])
+        if(bool_complete){
+          dd <- data.frame(left = as.vector(dat$times),
+                           right = ifelse(dat$cens == 1, dat$times, NA))
+          paramsBML <- fitdist(dd$left, "llogis")
+          alphahat <- unname(coefficients(paramsBML))[1]
+          betahat <- unname(coefficients(paramsBML))[2]
+        } else {
+          paramsBSML <- unname(survreg(Surv(dat$times, dat$cens) ~ 1,
+                                       dist = "loglogistic")$icoef)
+          alphahat <- 1 / exp(paramsBSML[2])
+          betahat <- exp(paramsBSML[1])
+        }
       } else {
         alphahat <- alpha0
         betahat <- beta0
@@ -416,7 +499,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     }
     aBeta <- betaLimits[1]
     bBeta <- betaLimits[2]
-    paramsML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+    if(bool_complete){
+      paramsML <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
+    } else {
+      paramsML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+    }
     alphaML <- unname(paramsML$estimate[1])
     gammaML <- unname(paramsML$estimate[2])
     alphaSE <- unname(paramsML$sd[1])
@@ -427,7 +514,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(alpha0) || is.null(gamma0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        paramsBSML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+        if(bool_complete){
+          paramsBSML <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
+        } else {
+          paramsBSML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+        }
         alphahat <- unname(paramsBSML$estimate[1])
         gammahat <- unname(paramsBSML$estimate[2])
       } else {
