@@ -34,7 +34,7 @@ Depends: R (>= 3.5.0), survival, actuar
 Imports: fitdistrplus, grid, ggplot2, gridExtra, boot, methods
 NeedsCompilation: no
 VignetteBuilder: knitr
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, rms
 Packaged: 2024-07-29
 Author: Klaus Langohr [aut, cre],
   Mireia Besalú [aut],
