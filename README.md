@@ -1,15 +1,17 @@
-# GofCens: Goodness-of-Fit Methods for Complete and Right-Censored Data <img src="man/figures/GofCens_logo2.png" align="right" width="250"/>
+# GofCens: Goodness-of-Fit Methods for Right-Censored Data <img src="man/figures/GofCens_logo2.png" align="right" width="250"/>
 
 <!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/GofCens)](https://cran.r-project.org/package=GofCens) 
 [![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/GofCens)](https://cran.r-project.org/package=GofCens) [![Download counter](https://cranlogs.r-pkg.org/badges/GofCens)](https://cran.r-project.org/package=GofCens)
 <!-- badges: end -->
 
-The **GofCens** package include the following graphical tools and goodness-of-fit tests for complete and right-censored data:
+The **GofCens** package include the following graphical tools and goodness-of-fit tests for right-censored data:
 
 -   Kolmogorov-Smirnov, Cramér-von Mises, and Anderson-Darling tests, which use the empirical distribution function for complete data and are extended for right-censored data.
 -   Generalized chi-squared-type test, which is based on the squared differences between observed and expected counts using random cells with right-censored data.
 -   A series of graphical tools such as probability or cumulative hazard plots to guide the decision about the most suitable parametric model for the data.
+
+These functions share several features as they can handle both complete and right-censored data, and they provide parameter estimates for the distributions under study. 
 
 ## Installation
 
