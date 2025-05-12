@@ -41,14 +41,6 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if(is.vector(start.arg)) {
       start.arg <- as.list(start.arg)
     }
-    #arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=pseudodata,
-    #                           distname=distname)
-
-    #check inconsistent parameters
-    #argddistname <- names(formals(ddistname))
-    #hasnodefaultval <- sapply(formals(ddistname), is.name)
-    #arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg,
-    #                               argddistname, hasnodefaultval)
   }
   if (distr == "beta" && any(times < betaLimits[1] | times > betaLimits[2])) {
     msg <- paste0("Times must be within limits! Try with 'betaLimits = c(",
