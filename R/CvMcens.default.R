@@ -70,6 +70,9 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (distr == "beta" && (is.null(params0$shape) || is.null(params0$shape2))) {
       stop("Argument 'params0' requires values for both shape parameters.")
     }
+    if (other && is.null(params0$theta)) {
+      stop("Argument 'params0' requires values for the general vector theta.")
+    }
   }
   bool_complete <- all(cens==1)
   rnd <- -log(tol, 10)
@@ -79,9 +82,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
   gamma0 <- params0$shape2
   mu0 <- params0$location
   beta0 <- params0$scale
-  #general parameter:
   theta0 <- params0$theta
-
   alphaML <- gammaML <- muML <- betaML <- thetaML <- NULL
   alphaSE <- gammaSE <- muSE <- betaSE <- thetaSE <- NULL
   censKM <- survfit(Surv(times, 1 - cens) ~ 1)
@@ -669,17 +670,21 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                                  locationSE = muSE, scaleSE = betaSE,
                                  thetaSE = thetaSE),
                    aic = aic, bic = bic,
-                   BS = BS)
+                   BS = BS,
+                   complete = bool_complete)
   } else {
     output <- list(Distribution = distr,
                    Hypothesis = hypo,
                    Test = c(CvM = CvM, "p-value" = pval),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML),
+                                       location = muML, scale = betaML,
+                                 theta = thetaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
-                                 locationSE = muSE, scaleSE = betaSE),
+                                 locationSE = muSE, scaleSE = betaSE,
+                                 thetaSE = thetaSE),
                    aic = aic, bic = bic,
-                   BS = BS)
+                   BS = BS,
+                   complete = bool_complete)
   }
   class(output) <- "CvMcens"
   output
