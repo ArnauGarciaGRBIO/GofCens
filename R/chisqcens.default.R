@@ -3,7 +3,8 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
                                         "lognormal", "logistic", "loglogistic", "beta"),
                               betaLimits=c(0, 1), igumb = c(10, 10),
                               BS = 999, params0 = list(shape = NULL, shape2 = NULL,
-                                                       location = NULL, scale = NULL),
+                                                       location = NULL, scale = NULL,
+                                                       theta = NULL),
                               tol = 1e-04, start = NULL, ...) {
   if (!is.numeric(times)) {
     stop("Variable times must be numeric!")
@@ -73,8 +74,9 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
   gamma0 <- params0$shape2
   mu0 <- params0$location
   beta0 <- params0$scale
-  alphaML <- gammaML <- muML <- betaML <- NULL
-  alphaSE <- gammaSE <- muSE <- betaSE <- NULL
+  theta0 <- params0$theta
+  alphaML <- gammaML <- muML <- betaML <- thetaML <- NULL
+  alphaSE <- gammaSE <- muSE <- betaSE <- thetaSE <- NULL
   aic <- bic <- NULL
   censKM <- survfit(Surv(times, 1 - cens) ~ 1)
   survKM <- survfit(Surv(times, cens) ~ 1)
@@ -720,9 +722,11 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
     output <- list(Distribution = distr,
                    Test = c("Statistic" = tn, "p-value" = pval),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML),
+                                       location = muML, scale = betaML,
+                                 theta = thetaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
-                                 locationSE = muSE, scaleSE = betaSE),
+                                 locationSE = muSE, scaleSE = betaSE,
+                                 thetaSE = thetaSE),
                    Cellnumbers = c("Original" = Morig, "Final" = Mout),
                    aic = aic, bic = bic,
                    BS = BS)
@@ -731,9 +735,11 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
                    Hypothesis = hypo,
                    Test = c("Statistic" = tn, "p-value" = pval),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML),
+                                       location = muML, scale = betaML,
+                                 theta = thetaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
-                                 locationSE = muSE, scaleSE = betaSE),
+                                 locationSE = muSE, scaleSE = betaSE,
+                                 thetaSE = thetaSE),
                    Cellnumbers = c("Original" = Morig, "Final" = Mout),
                    aic = aic, bic = bic,
                    BS = BS)
