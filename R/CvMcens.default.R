@@ -662,8 +662,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                                  locationSE = muSE, scaleSE = betaSE,
                                  thetaSE = thetaSE),
                    aic = aic, bic = bic,
-                   BS = BS,
-                   complete = bool_complete)
+                   BS = BS)
   } else {
     output <- list(Distribution = distr,
                    Hypothesis = hypo,
@@ -675,8 +674,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                                  locationSE = muSE, scaleSE = betaSE,
                                  thetaSE = thetaSE),
                    aic = aic, bic = bic,
-                   BS = BS,
-                   complete = bool_complete)
+                   BS = BS)
   }
   class(output) <- "CvMcens"
   output
