@@ -3,7 +3,8 @@ KScens.default <- function(times, cens = rep(1, length(times)),
                                      "lognormal", "logistic", "loglogistic", "beta"),
                            betaLimits = c(0, 1), igumb = c(10, 10), BS = 999,
                            params0 = list(shape = NULL, shape2 = NULL,
-                                          location = NULL, scale = NULL),
+                                          location = NULL, scale = NULL,
+                                          theta = NULL),
                            tol = 1e-04, boot = TRUE, start = NULL, ...) {
   if (!is.numeric(times)) {
     stop("Variable times must be numeric!")
@@ -904,8 +905,9 @@ KScens.default <- function(times, cens = rep(1, length(times)),
     gamma0 <- params0$shape2
     mu0 <- params0$location
     beta0 <- params0$scale
-    alphaML <- gammaML <- muML <- betaML <- NULL
-    alphaSE <- gammaSE <- muSE <- betaSE <- NULL
+    theta0 <- params0$theta
+    alphaML <- gammaML <- muML <- betaML <- thetaML <- NULL
+    alphaSE <- gammaSE <- muSE <- betaSE <- thetaSE <- NULL
     aic <- bic <- NULL
     if (distr == "exponential") {
       if (!is.null(beta0)) {
@@ -1075,17 +1077,6 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         1 - pbeta((x - aBeta) / (bBeta - aBeta), alpha, gamma)
       }
     }
-    if (!all(sapply(params0, is.null))) {
-      alpha <- alpha0
-      gamma <- gamma0
-      mu <- mu0
-      beta <- beta0
-    } else {
-      alpha <- alphaML
-      gamma <- gammaML
-      mu <- muML
-      beta <- betaML
-    }
 
     if (other) {
       if (!is.null(theta0)) {
@@ -1108,6 +1099,20 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - do.call(pdistname, c(list(x), as.list(theta)))
       }
+    }
+
+    if (!all(sapply(params0, is.null))) {
+      alpha <- alpha0
+      gamma <- gamma0
+      mu <- mu0
+      beta <- beta0
+      theta <- theta0
+    } else {
+      alpha <- alphaML
+      gamma <- gammaML
+      mu <- muML
+      beta <- betaML
+      theta <- thetaML
     }
 
     sumSurvT <- survfit(Surv(times, cens) ~ 1, stype = 2, ctype = 2)
@@ -1149,9 +1154,11 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       output <- list(Distribution = distr,
                      Test = c(A = A, "p-value" = pval),
                      Estimates = c(shape = alphaML, shape2 = gammaML,
-                                   location = muML, scale = betaML),
+                                   location = muML, scale = betaML,
+                                   theta = thetaML),
                      StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
-                                   locationSE = muSE, scaleSE = betaSE),
+                                   locationSE = muSE, scaleSE = betaSE,
+                                   thetaSE = thetaSE),
                      aic = aic, bic = bic,
                      BS = 0)
     } else {
@@ -1159,9 +1166,11 @@ KScens.default <- function(times, cens = rep(1, length(times)),
                      Hypothesis = hypo,
                      Test = c(A = A, "p-value" = pval),
                      Estimates = c(shape = alphaML, shape2 = gammaML,
-                                   location = muML, scale = betaML),
+                                   location = muML, scale = betaML,
+                                   theta = thetaML),
                      StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
-                                   locationSE = muSE, scaleSE = betaSE),
+                                   locationSE = muSE, scaleSE = betaSE,
+                                   thetaSE = thetaSE),
                      aic = aic, bic = bic,
                      BS = 0)
     }
