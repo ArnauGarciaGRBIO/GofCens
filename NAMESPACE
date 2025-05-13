@@ -13,7 +13,9 @@ importFrom("stats", "coefficients", "ecdf", "pbeta", "pexp", "plnorm",
 importFrom("boot", "boot")
 importFrom("methods", "is")
 
+S3method(summary, ADcens)
 S3method(print, ADcens)
+S3method(print, summary.ADcens)
 S3method(ADcens, formula)
 S3method(ADcens, default)
 S3method(print, KScens)
