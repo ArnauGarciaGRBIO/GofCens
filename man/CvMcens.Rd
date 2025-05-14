@@ -46,7 +46,8 @@
   \item{start}{A named list giving the initial values of parameters of the named
                distribution or a function of data computing initial values and
                returning a named list. This argument may be omitted (default)
-               for some distributions (the eight prespecified distributions).}
+               for the eight prespecified distributions. See more details in
+               \link[fitdistrplus]{mledist}.}
   \item{\dots}{Additional arguments for the \code{boot} function of the
     \pkg{boot} package.}
 }
