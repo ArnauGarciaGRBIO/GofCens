@@ -148,7 +148,8 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is(paramsML, "try-error")) {
         stop("Function failed to estimate the parameters.\n
             Try with other initial values.")
-      } else {
+      }
+    } else {
         paramsML <- try(suppressMessages(fitdistcens(dd, "gumbel",
                                                      start = list(alpha = igumb[1],
                                                                   scale = igumb[2]))),
@@ -157,7 +158,6 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
           stop("Function failed to estimate the parameters.\n
             Try with other initial values.")
         }
-      }
     }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
