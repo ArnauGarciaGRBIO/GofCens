@@ -19,6 +19,9 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     stop("params0 must be a list!")
   }
   #distr <- match.arg(distr)
+  if(length(distr)>1){
+    stop("Distribution must be specified!")
+  }
   if (distr %in% c("exponential", "gumbel", "weibull", "normal",
                    "lognormal", "logistic", "loglogistic", "beta")){
     other <- FALSE
