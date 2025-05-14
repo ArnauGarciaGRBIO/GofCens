@@ -36,6 +36,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   if (length(distributions) == 0) {
     stop("No distribution to be fitted!")
   }
+  bool_complete <- all(cens==1)
   dd <- data.frame(left = as.vector(times), right = ifelse(cens == 1, times, NA))
   survKM <- survfit(Surv(times, cens) ~ 1)
   mxtime <- max(survKM$time)
@@ -47,22 +48,50 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("exponential" %in% distributions) {
     tryCatch({
-      fitExpo <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
-      muu <- unname(coefficients(fitExpo))
-      params$exponential <- 1 / exp(-muu)
-      names(params$exponential) <- "scale"
-      se$exponential <- sqrt(fitExpo$var[1])*exp(muu)
-      names(se$exponential) <- "scale (se)"
-      aic$exponential <- 2 - 2*fitExpo$loglik[1]
-      bic$exponential <- log(length(times)) - 2*fitExpo$loglik[1]
-      srvline$exponential <- 1 - pexp(sqtime, exp(-muu))
-      titl$exponential <- "Exponential"
+      if(bool_complete){
+        fitExpo <- fitdist(dd$left, "exp")
+        muu <- unname(fitExpo$estimate)
+        params$exponential <- 1 / muu
+        names(params$exponential) <- "scale"
+        se$exponential <- sqrt(fitExpo$vcov[1])*(1/muu)^2
+        names(se$exponential) <- "scale (se)"
+        aic$exponential <- fitExpo$aic
+        bic$exponential <- fitExpo$bic
+        srvline$exponential <- 1 - pexp(sqtime, muu)
+        titl$exponential <- "Exponential"
+      } else {
+        fitExpo <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
+        muu <- unname(coefficients(fitExpo))
+        params$exponential <- 1 / exp(-muu)
+        names(params$exponential) <- "scale"
+        se$exponential <- sqrt(fitExpo$var[1])*exp(muu)
+        names(se$exponential) <- "scale (se)"
+        aic$exponential <- 2 - 2*fitExpo$loglik[1]
+        bic$exponential <- log(length(times)) - 2*fitExpo$loglik[1]
+        srvline$exponential <- 1 - pexp(sqtime, exp(-muu))
+        titl$exponential <- "Exponential"
+      }
     }, error = function(e) e)
   }
   if ("gumbel" %in% distributions) {
     tryCatch({
-      fitGumb <- fitdistcens(dd, "gumbel",
-                             start = list(alpha = igumb[1], scale = igumb[2]))
+      if(bool_complete){
+        fitGumb <- try(suppressMessages(fitdist(dd$left, "gumbel",
+                                                start = list(alpha = igumb[1],
+                                                             scale = igumb[2]))))
+        if (is(fitGumb, "try-error")) {
+          stop("Function failed to estimate the parameters.\n
+            Try with other initial values.")
+        }
+      } else {
+        fitGumb <- try(suppressMessages(fitdistcens(dd, "gumbel",
+                                                    start = list(alpha = igumb[1],
+                                                                 scale = igumb[2]))))
+        if (is(fitGumb, "try-error")) {
+          stop("Function failed to estimate the parameters.\n
+          Try with other initial values.")
+        }
+      }
       locGumb <- fitGumb$estimate[1]
       scaleGumb <- fitGumb$estimate[2]
       params$gumbel <- c(locGumb, scaleGumb)
@@ -79,7 +108,11 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("weibull" %in% distributions) {
     tryCatch({
-      fitWei <- fitdistcens(dd, "weibull")
+      if(bool_complete){
+        fitWei <- fitdist(dd$left, "weibull")
+      } else {
+        fitWei <- fitdistcens(dd, "weibull")
+      }
       shapeWei <- fitWei$estimate[1]
       scaleWei <- fitWei$estimate[2]
       params$weibull <- c(shapeWei, scaleWei)
@@ -95,7 +128,11 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("normal" %in% distributions) {
     tryCatch({
-      fitNorm <- fitdistcens(dd, "norm")
+      if(bool_complete){
+        fitNorm <- fitdist(dd$left, "norm")
+      } else {
+        fitNorm <- fitdistcens(dd, "norm")
+      }
       locNorm <- fitNorm$estimate[1]
       scaleNorm <- fitNorm$estimate[2]
       params$normal <- fitNorm$estimate
@@ -112,7 +149,11 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("logistic" %in% distributions) {
     tryCatch({
-      fitLog <- fitdistcens(dd, "logis")
+      if(bool_complete){
+        fitLog <- fitdist(dd$left, "logis")
+      } else {
+        fitLog <- fitdistcens(dd, "logis")
+      }
       locLogis <- fitLog$estimate[1]
       scaleLogis <- fitLog$estimate[2]
       params$logistic <- fitLog$estimate
@@ -128,7 +169,11 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("lognormal" %in% distributions) {
     tryCatch({
-      fitLnorm <- fitdistcens(dd, "lnorm")
+      if(bool_complete){
+        fitLnorm <- fitdist(dd$left, "lnorm")
+      } else {
+        fitLnorm <- fitdistcens(dd, "lnorm")
+      }
       locLnorm <- fitLnorm$estimate[1]
       scaleLnorm <- fitLnorm$estimate[2]
       params$lognormal <- c(locLnorm, scaleLnorm)
@@ -145,26 +190,46 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("loglogistic" %in% distributions) {
     tryCatch({
-      fitLoglog <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
-      shapeLoglogis <- 1 / exp(unname(fitLoglog$icoef)[2])
-      scaleLoglogis <- exp(unname(fitLoglog$icoef)[1])
-      params$loglogistic <- c(shapeLoglogis, scaleLoglogis)
-      names(params$loglogistic) <- c("shape", "scale")
-      shapeLoglogisSE <- sqrt(fitLoglog$var[4])*exp(-unname(fitLoglog$icoef)[2])
-      scaleLoglogisSE <- sqrt(fitLoglog$var[1])*exp(unname(fitLoglog$icoef)[1])
-      se$loglogistic <- c(shapeLoglogisSE, scaleLoglogisSE)
-      names(se$loglogistic) <- c("shape (se)", "scale (se)")
-      aic$loglogistic <- 2*2 - 2*fitLoglog$loglik[1]
-      bic$loglogistic <- log(length(times))*2 - 2*fitLoglog$loglik[1]
-      srvline$loglogistic <- 1 - pllogis(sqtime, shapeLoglogis, scale = scaleLoglogis)
-      titl$loglogistic <- "Log-logistic"
+      if(bool_complete){
+        fitLoglog <- fitdist(dd$left, "llogis")
+        shapeLoglogis <- unname(coefficients(fitLoglog))[1]
+        scaleLoglogis <- unname(coefficients(fitLoglog))[2]
+        params$loglogistic <- c(shapeLoglogis, scaleLoglogis)
+        names(params$loglogistic) <- c("shape", "scale")
+        shapeLoglogisSE <- sqrt(fitLoglog$vcov[1,1])
+        scaleLoglogisSE <- sqrt(fitLoglog$vcov[2,2])
+        se$loglogistic <- c(shapeLoglogisSE, scaleLoglogisSE)
+        names(se$loglogistic) <- c("shape (se)", "scale (se)")
+        aic$loglogistic <- fitLoglog$aic
+        bic$loglogistic <- fitLoglog$bic
+        srvline$loglogistic <- 1 - pllogis(sqtime, shapeLoglogis, scale = scaleLoglogis)
+        titl$loglogistic <- "Log-logistic"
+      } else {
+        fitLoglog <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
+        shapeLoglogis <- 1 / exp(unname(fitLoglog$icoef)[2])
+        scaleLoglogis <- exp(unname(fitLoglog$icoef)[1])
+        params$loglogistic <- c(shapeLoglogis, scaleLoglogis)
+        names(params$loglogistic) <- c("shape", "scale")
+        shapeLoglogisSE <- sqrt(fitLoglog$var[4])*exp(-unname(fitLoglog$icoef)[2])
+        scaleLoglogisSE <- sqrt(fitLoglog$var[1])*exp(unname(fitLoglog$icoef)[1])
+        se$loglogistic <- c(shapeLoglogisSE, scaleLoglogisSE)
+        names(se$loglogistic) <- c("shape (se)", "scale (se)")
+        aic$loglogistic <- 2*2 - 2*fitLoglog$loglik[1]
+        bic$loglogistic <- log(length(times))*2 - 2*fitLoglog$loglik[1]
+        srvline$loglogistic <- 1 - pllogis(sqtime, shapeLoglogis, scale = scaleLoglogis)
+        titl$loglogistic <- "Log-logistic"
+      }
     }, error = function(e) e)
   }
   if ("beta" %in% distributions) {
     tryCatch({
       aBeta <- betaLimits[1]
       bBeta <- betaLimits[2]
-      fitBeta <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+      if(bool_complete){
+        fitBeta <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
+      } else {
+        fitBeta <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+      }
       shape1Beta <- fitBeta$estimate[1]
       shape2Beta <- fitBeta$estimate[2]
       params$beta <- list(parameters = c(shape1Beta, shape2Beta),

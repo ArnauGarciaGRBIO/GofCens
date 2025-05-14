@@ -46,6 +46,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
       stop("Argument 'params0' requires values for both shape parameters.")
     }
   }
+  bool_complete <- all(cens==1)
   dd <- data.frame(left = as.vector(times), right = ifelse(cens == 1, times, NA))
   survKM <- survfit(Surv(times, cens) ~ 1)
   tim <- summary(survKM)$time
@@ -64,12 +65,21 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
   theorPP <- NULL
   theorQQ <- NULL
   if (distr == "exponential") {
-    paramsML <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
-    muu <- unname(coefficients(paramsML))
-    betaML <- 1 / exp(-muu)
-    betaSE <- sqrt(paramsML$var[1])*exp(muu)
-    aic <- 2 - 2*paramsML$loglik[1]
-    bic <- log(length(times)) - 2*paramsML$loglik[1]
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "exp")
+      muu <- unname(paramsML$estimate)
+      betaML <- 1 / muu
+      betaSE <- sqrt(paramsML$vcov[1])*(1/muu)^2
+      aic <- paramsML$aic
+      bic <- paramsML$bic
+    } else {
+      paramsML <- survreg(Surv(times, cens) ~ 1, dist = "exponential")
+      muu <- unname(coefficients(paramsML))
+      betaML <- 1 / exp(-muu)
+      betaSE <- sqrt(paramsML$var[1])*exp(muu)
+      aic <- 2 - 2*paramsML$loglik[1]
+      bic <- log(length(times)) - 2*paramsML$loglik[1]
+    }
     if (is.null(beta0)) {
       rateExp <- exp(-muu)
       outp <- list(Distribution = "exponential", Estimates = betaML,
@@ -88,13 +98,24 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "gumbel") {
-    paramsML <- try(suppressMessages(fitdistcens(dd, "gumbel",
-                                                 start = list(alpha = igumb[1],
-                                                              scale = igumb[2]))),
-                    silent = TRUE)
-    if (is(paramsML, "try-error")) {
-      stop("Function failed to estimate the parameters.\n
+    if(bool_complete){
+      paramsML <- try(suppressMessages(fitdist(dd$left, "gumbel",
+                                               start = list(alpha = igumb[1],
+                                                            scale = igumb[2]))),
+                      silent = TRUE)
+      if (is(paramsML, "try-error")) {
+        stop("Function failed to estimate the parameters.\n
             Try with other initial values.")
+      }
+    } else {
+      paramsML <- try(suppressMessages(fitdistcens(dd, "gumbel",
+                                                   start = list(alpha = igumb[1],
+                                                                scale = igumb[2]))),
+                      silent = TRUE)
+      if (is(paramsML, "try-error")) {
+        stop("Function failed to estimate the parameters.\n
+            Try with other initial values.")
+      }
     }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
@@ -126,7 +147,11 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "weibull") {
-    paramsML <- fitdistcens(dd, "weibull")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "weibull")
+    } else {
+      paramsML <- fitdistcens(dd, "weibull")
+    }
     alphaML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     alphaSE <- unname(paramsML$sd[1])
@@ -157,7 +182,11 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "normal") {
-    paramsML <- fitdistcens(dd, "norm")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "norm")
+    } else {
+      paramsML <- fitdistcens(dd, "norm")
+    }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     muSE <- unname(paramsML$sd[1])
@@ -188,7 +217,11 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "lognormal") {
-    paramsML <- fitdistcens(dd, "lnorm")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "lnorm")
+    } else {
+      paramsML <- fitdistcens(dd, "lnorm")
+    }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     muSE <- unname(paramsML$sd[1])
@@ -219,7 +252,11 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "logistic") {
-    paramsML <- fitdistcens(dd, "logis")
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "logis")
+    } else {
+      paramsML <- fitdistcens(dd, "logis")
+    }
     muML <- unname(paramsML$estimate[1])
     betaML <- unname(paramsML$estimate[2])
     muSE <- unname(paramsML$sd[1])
@@ -250,13 +287,23 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "loglogistic") {
-    paramsML <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
-    alphaML <- 1 / exp(unname(paramsML$icoef)[2])
-    betaML <- exp(unname(paramsML$icoef)[1])
-    alphaSE <- sqrt(paramsML$var[4])*exp(-unname(paramsML$icoef)[2])
-    betaSE <- sqrt(paramsML$var[1])*exp(unname(paramsML$icoef)[1])
-    aic <- 2*2 - 2*paramsML$loglik[1]
-    bic <- log(length(times))*2 - 2*paramsML$loglik[1]
+    if(bool_complete){
+      paramsML <- fitdist(dd$left, "llogis")
+      alphaML <- unname(coefficients(paramsML))[1]
+      betaML <- unname(coefficients(paramsML))[2]
+      alphaSE <- sqrt(paramsML$vcov[1,1])
+      betaSE <- sqrt(paramsML$vcov[2,2])
+      aic <- paramsML$aic
+      bic <- paramsML$bic
+    } else {
+      paramsML <- survreg(Surv(times, cens) ~ 1, dist = "loglogistic")
+      alphaML <- 1 / exp(unname(paramsML$icoef)[2])
+      betaML <- exp(unname(paramsML$icoef)[1])
+      alphaSE <- sqrt(paramsML$var[4])*exp(-unname(paramsML$icoef)[2])
+      betaSE <- sqrt(paramsML$var[1])*exp(unname(paramsML$icoef)[1])
+      aic <- 2*2 - 2*paramsML$loglik[1]
+      bic <- log(length(times))*2 - 2*paramsML$loglik[1]
+    }
     if (is.null(alpha0) || is.null(beta0)) {
       shapeLoglog <- alphaML
       scaleLoglog <- betaML
@@ -283,7 +330,11 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
   if (distr == "beta") {
     aBeta <- betaLimits[1]
     bBeta <- betaLimits[2]
-    paramsML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+    if(bool_complete){
+      paramsML <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
+    } else {
+      paramsML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
+    }
     alphaML <- unname(paramsML$estimate[1])
     gammaML <- unname(paramsML$estimate[2])
     alphaSE <- unname(paramsML$sd[1])
