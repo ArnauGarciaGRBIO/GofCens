@@ -18,7 +18,9 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
   if (!is.list(params0)) {
     stop("params0 must be a list!")
   }
-  #distr <- match.arg(distr)
+  if(length(distr)>1){
+    stop("Distribution must be specified!")
+  }
   if (distr %in% c("exponential", "gumbel", "weibull", "normal",
                    "lognormal", "logistic", "loglogistic", "beta")){
     other <- FALSE
@@ -148,7 +150,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
     }
     beta <- ifelse(is.null(beta0), betaML, beta0)
     bts <- boot(data.frame(times, cens), expStat, R = BS, sim = "parametric",
-                ran.gen = expRnd, mle = 1 / beta)
+                ran.gen = expRnd, mle = 1 / beta, ...)
   }
   if (distr == "gumbel") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -230,7 +232,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), gumbStat, R = BS, sim = "parametric",
-                ran.gen = gumbRnd, mle = c(mu, beta))
+                ran.gen = gumbRnd, mle = c(mu, beta), ...)
   }
   if (distr == "weibull") {
     if (!is.null(alpha0) && !is.null(beta0)) {
@@ -295,7 +297,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), weiStat, R = BS, sim = "parametric",
-                ran.gen = weiRnd, mle = c(alpha, beta))
+                ran.gen = weiRnd, mle = c(alpha, beta), ...)
   }
   if (distr == "normal") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -361,7 +363,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), normStat, R = BS, sim = "parametric",
-                ran.gen = normRnd, mle = c(mu, beta))
+                ran.gen = normRnd, mle = c(mu, beta), ...)
   }
   if (distr == "lognormal") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -426,7 +428,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), lnormStat, R = BS, sim = "parametric",
-                ran.gen = lnormRnd, mle = c(mu, beta))
+                ran.gen = lnormRnd, mle = c(mu, beta), ...)
   }
   if (distr == "logistic") {
     if (!is.null(mu0) && !is.null(beta0)) {
@@ -492,7 +494,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), logiStat, R = BS, sim = "parametric",
-                ran.gen = logiRnd, mle = c(mu, beta))
+                ran.gen = logiRnd, mle = c(mu, beta), ...)
   }
   if (distr == "loglogistic") {
     if (!is.null(alpha0) && !is.null(beta0)) {
@@ -566,7 +568,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       beta <- beta0
     }
     bts <- boot(data.frame(times, cens), llogiStat, R = BS, sim = "parametric",
-                ran.gen = llogiRnd, mle = c(alpha, beta))
+                ran.gen = llogiRnd, mle = c(alpha, beta), ...)
   }
   if (distr == "beta") {
     if (!is.null(alpha0) && !is.null(gamma0)) {
@@ -635,7 +637,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       gamma <- gamma0
     }
     bts <- boot(data.frame(times, cens), betaStat, R = BS, sim = "parametric",
-                ran.gen = betaRnd, mle = c(alpha, gamma))
+                ran.gen = betaRnd, mle = c(alpha, gamma), ...)
   }
 
   if (other) {

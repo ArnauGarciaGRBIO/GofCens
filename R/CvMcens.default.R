@@ -18,7 +18,6 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
   if (!is.list(params0)) {
     stop("params0 must be a list!")
   }
-  #distr <- match.arg(distr)
   if(length(distr)>1){
     stop("Distribution must be specified!")
   }

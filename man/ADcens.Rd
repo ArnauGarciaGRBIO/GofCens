@@ -13,7 +13,8 @@
                  "lognormal", "logistic", "loglogistic", "beta"),
        betaLimits = c(0, 1), igumb = c(10, 10), BS = 999,
        params0 = list(shape = NULL, shape2 = NULL,
-                      location = NULL, scale = NULL), tol = 1e-04, ...)
+                       location = NULL, scale = NULL, theta = NULL),
+       tol = 1e-04, start = NULL, ...)
 \method{ADcens}{formula}(formula, data, ...)
 }
 \arguments{
@@ -21,11 +22,14 @@
   \item{cens}{Status indicator (1, exact time; 0, right-censored time). If not
     provided, all times are assumed to be exact.}
   \item{distr}{A string specifying the name of the distribution to be studied.
-    The possible distributions are the exponential (\code{"exponential"}),
-    the Weibull (\code{"weibull"}), the Gumbel (\code{"gumbel"}),
-    the normal (\code{"normal"}), the lognormal (\code{"lognormal"}),
-    the logistic (\code{"logistic"}), the loglogistic (\code{"loglogistic"}),
-    and the beta (\code{"beta"}) distribution.}
+               The possible distributions are the exponential (\code{"exponential"}),
+               the Weibull (\code{"weibull"}), the Gumbel (\code{"gumbel"}),
+               the normal (\code{"normal"}), the lognormal (\code{"lognormal"}),
+               the logistic (\code{"logistic"}), the loglogistic (\code{"loglogistic"}),
+               and the beta (\code{"beta"}) distribution. In addition, if the
+               character string used is \code{"name"}, every distribution for which the
+               corresponiding density (\code{dname}), probability (\code{pname})
+               and random generator (\code{rname}) functions are defined, can be used.}
   \item{betaLimits}{Two-components vector with the lower and upper bounds of the
     Beta distribution. This argument is only required, if the beta
     distribution is considered.}
@@ -39,6 +43,11 @@
   \item{tol}{Precision of survival times.}
   \item{formula}{A formula with a numeric vector as response (which assumes no censoring) or \code{Surv} object.}
   \item{data}{Data frame for variables in \code{formula}.}
+  \item{start}{A named list giving the initial values of parameters of the named
+               distribution or a function of data computing initial values and
+               returning a named list. This argument may be omitted (default)
+               for the eight prespecified distributions. See more details in
+               \link[fitdistrplus]{mledist}.}
   \item{\dots}{Additional arguments for the \code{boot} function of the
     \pkg{boot} package.}
 }
@@ -91,7 +100,7 @@ An object of class \code{"ADcens"} is a list containing the following components
 set.seed(123)
 ADcens(times = rweibull(100, 12, scale = 4), distr = "weibull",
        BS = 199)
-print(ADcens(times = rweibull(100, 12, scale = 4), distr = "exponential",
+summary(ADcens(times = rweibull(100, 12, scale = 4), distr = "exponential",
        BS = 199), outp = "table", print.BIC = FALSE, print.infoBoot = TRUE)
 
 \dontrun{

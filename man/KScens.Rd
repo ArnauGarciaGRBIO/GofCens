@@ -15,8 +15,8 @@
                  "lognormal", "logistic", "loglogistic", "beta"),
        betaLimits = c(0, 1), igumb = c(10, 10), BS = 999,
        params0 = list(shape = NULL, shape2 = NULL, location = NULL,
-                      scale = NULL),
-       tol = 1e-04, boot = TRUE, ...)
+                      scale = NULL, theta = NULL),
+       tol = 1e-04, boot = TRUE, start = NULL, ...)
 \method{KScens}{formula}(formula, data, ...)
 }
 
@@ -29,7 +29,10 @@
                the Weibull (\code{"weibull"}), the Gumbel (\code{"gumbel"}),
                the normal (\code{"normal"}), the lognormal (\code{"lognormal"}),
                the logistic (\code{"logistic"}), the loglogistic (\code{"loglogistic"}),
-               and the beta (\code{"beta"}) distribution.}
+               and the beta (\code{"beta"}) distribution. In addition, if the
+               character string used is \code{"name"}, every distribution for which the
+               corresponiding density (\code{dname}), probability (\code{pname})
+               and random generator (\code{rname}) functions are defined, can be used.}
   \item{betaLimits}{Two-components vector with the lower and upper bounds of the
                     Beta distribution. This argument is only required, if the beta
                     distribution is considered.}
@@ -45,6 +48,11 @@
   \item{data}{Data frame for variables in \code{formula}.}
   \item{boot}{Logical to indicate if the p-value is computed using bootstrapping or using the
               the modified Kolmogorov-Smirnov test (see details). Default is \code{TRUE}.}
+  \item{start}{A named list giving the initial values of parameters of the named
+               distribution or a function of data computing initial values and
+               returning a named list. This argument may be omitted (default)
+               for the eight prespecified distributions. See more details in
+               \link[fitdistrplus]{mledist}.}
   \item{\dots}{Additional arguments for the \code{boot} function of the
     \pkg{boot} package.}
 }
@@ -113,7 +121,7 @@ KScens(Surv(time, status) ~ 1, colon, distr = "norm", BS = 99)
 KScens(Surv(time, status) ~ 1, colon, distr = "norm", boot = FALSE)
 
 data(nba)
-print(KScens(Surv(survtime, cens) ~ 1, nba, "logis", boot = FALSE), degs = 2)
+summary(KScens(Surv(survtime, cens) ~ 1, nba, "logis", boot = FALSE), degs = 2)
 KScens(Surv(survtime, cens) ~ 1, nba, "beta", betaLimits = c(0, 80),
        boot = FALSE)
 }

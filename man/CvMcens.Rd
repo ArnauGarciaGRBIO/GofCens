@@ -14,7 +14,7 @@
         betaLimits = c(0, 1), igumb = c(10, 10), BS = 999,
         params0 = list(shape = NULL, shape2 = NULL,
                        location = NULL, scale = NULL, theta = NULL),
-                       tol = 1e-04, start = NULL, ...)
+        tol = 1e-04, start = NULL, ...)
 \method{CvMcens}{formula}(formula, data,...)
 }
 \arguments{

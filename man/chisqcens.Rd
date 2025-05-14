@@ -14,7 +14,8 @@
                     "lognormal", "logistic", "loglogistic", "beta"),
           betaLimits=c(0, 1), igumb = c(10, 10), BS = 999,
           params0 = list(shape = NULL, shape2 = NULL,
-                         location = NULL, scale = NULL), tol = 1e-04, ...)
+                       location = NULL, scale = NULL, theta = NULL),
+          tol = 1e-04, start = NULL, ...)
 \method{chisqcens}{formula}(formula, data,...)
 }
 \arguments{
@@ -27,7 +28,10 @@
                the Weibull (\code{"weibull"}), the Gumbel (\code{"gumbel"}),
                the normal (\code{"normal"}), the lognormal (\code{"lognormal"}),
                the logistic (\code{"logistic"}), the loglogistic (\code{"loglogistic"}),
-               and the beta (\code{"beta"}) distribution.}
+               and the beta (\code{"beta"}) distribution. In addition, if the
+               character string used is \code{"name"}, every distribution for which the
+               corresponiding density (\code{dname}), probability (\code{pname})
+               and random generator (\code{rname}) functions are defined, can be used.}
   \item{betaLimits}{Two-components vector with the lower and upper bounds of the
                     Beta distribution. This argument is only required, if the beta
                     distribution is considered.}
@@ -41,7 +45,13 @@
   \item{tol}{Precision of survival times.}
   \item{formula}{A formula with a numeric vector as response (which assumes no censoring) or \code{Surv} object.}
   \item{data}{Data frame for variables in \code{formula}.}
-  \item{\dots}{Additional arguments.}
+  \item{start}{A named list giving the initial values of parameters of the named
+               distribution or a function of data computing initial values and
+               returning a named list. This argument may be omitted (default)
+               for the eight prespecified distributions. See more details in
+               \link[fitdistrplus]{mledist}.}
+  \item{\dots}{Additional arguments for the \code{boot} function of the
+    \pkg{boot} package.}
 }
 \details{The function implements the test introduced by Kim (1993) and returns
          the value of the test statistic.
@@ -87,7 +97,7 @@ An object of class \code{"chisqcens"} is a list containing the following compone
 set.seed(123)
 chisqcens(times = rgumbel(100, 12, scale = 4), M = 8, distr = "gumbel",
           BS = 99)
-print(chisqcens(times = rlogis(100, 20, scale = 3), M = 8, distr = "loglogistic",
+summary(chisqcens(times = rlogis(100, 20, scale = 3), M = 8, distr = "loglogistic",
           BS = 105), print.AIC = FALSE, print.infoBoot = TRUE)
 
 \dontrun{
