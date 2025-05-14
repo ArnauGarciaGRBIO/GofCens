@@ -585,7 +585,6 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
                 ran.gen = betaRnd, mle = c(alpha, gamma), ...)
   }
 
-  ## Block for a generic distribution
   if (other) {
     if (!is.null(theta0)) {
       hypo <- c(theta = theta0)
