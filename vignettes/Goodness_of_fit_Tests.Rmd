@@ -59,7 +59,7 @@ Note that in this second example, with apply the internal function `print.KScens
 
 ```{r}
 set.seed(123)
-print(KScens(times, delta, distr = "weibull"), outp = "table")
+summary(KScens(times, delta, distr = "weibull"), outp = "table")
 ```
 
 By default the `KScens()` function computes the p-value via bootstrap methods, nonetheless if the argument `boot=FALSE` is used, the computation of the p-value is done using the theoretical approximation. Let us see an example:
@@ -96,7 +96,7 @@ For example, we can test the null hypothesis that the data come from a log-norma
 
 ```{r}
 set.seed(123)
-print(ADcens(times, delta, distr = "lognormal", 
+summary(ADcens(times, delta, distr = "lognormal", 
              params0 = list(location = 2, scale = 1.5)), outp = "table")
 ```
 
@@ -115,7 +115,7 @@ Now we use the function to assess whether the Weibull distribution fits the data
 
 ```{r}
 set.seed(123)
-print(gofcens(times, delta, distr = "weibull"), outp = "table")
+summary(gofcens(times, delta, distr = "weibull"), outp = "table")
 ```
 
 
@@ -134,7 +134,7 @@ Now we use the function for the Weibull distribution and we print it in the tabl
 
 ```{r}
 set.seed(123)
-print(chisqcens(times, delta, M = 8, distr = "weibull"), outp = "table")
+summary(chisqcens(times, delta, M = 8, distr = "weibull"), outp = "table")
 ```
 
 Again, based on the outputs, we would choose the log-normal distribution instead of the Weibull distribution, because its value of the test statistic is clearly smaller and the p-value is far larger.

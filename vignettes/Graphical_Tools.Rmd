@@ -57,17 +57,18 @@ The four plots exposed above (P-P, Q-Q, SP and ER plot) can be done by means of 
 For the illustration of the `probPlot()` function, we assess how well the log-normal distribution and the Weibull distribution fit to the sample data. The first four plots show fairly straight lines, thus confirming that the underlying distribution is the log-normal distribution, whereas the other plots clearly show that the Weibull distribution would not be an adequate distribution to model the data.
 
 ```{r}
-probPlot(times, delta, distr = "lognormal", prnt = FALSE, cex.lab = 1.3)
-probPlot(times, delta, distr = "weibull", ggp = TRUE, prnt = FALSE)
+probPlot(times, delta, distr = "lognormal", cex.lab = 1.3, 
+         prnt = TRUE)
+probPlot(times, delta, distr = "weibull", ggp = TRUE, prnt = TRUE)
 ```
 
-Note that since `prnt` is set to `FALSE`, the maximum likelihood estimates under of both distributions parameters are not returned.
+Note that since `prnt` is set to `TRUE`, the maximum likelihood estimates under of both distributions parameters are returned.
 
 To illustrate additional functionalities of this function, we apply it again on the data set to assess the suitability of fitting a log-normal distribution with parameters $\mu=2$ and $\beta=1$. For this purpose, we employ the `params0` argument, whose default value is `NULL`, to specify the parameter values. Additionally, the main argument is a `Surv` object and we utilize the m argument to display the four probability plots in a single row.
 
 ```{r}
 probPlot(Surv(times, delta) ~ 1, distr = "lognormal", m = matrix(1:4, nrow = 1),
-         params0 = list(location = 2, scale = 1.5), ggp = TRUE)
+         params0 = list(location = 2, scale = 1.5), ggp = TRUE, prnt = TRUE)
 ```
 
 From these plots, it becomes evident that this log-normal distribution does not fit well to the data. Moreover, in this illustration, the function provides both the parameter values used in the probability plots and the maximum likelihood estimates of the parameters with the corresponding standard errors, AIC and BIC.
@@ -86,7 +87,7 @@ An illustration with the previously generated right-censored sample from the log
  cumhazPlot(times, delta, font.lab = 4, cex.lab = 1.3)
 ```
 
-If the user wants to assess the goodness of fit of the exponential and the beta distribution and compare these with the fit of the log-normal distribution, she/he has to specifically choose these distributions as it is done in the following example. Notice therein, that the user has to provide the limits of the beta distribution, because the default domain, the interval $(0, 1)$, does not cover the range of the sample’s survival times. Moreover, in this example, the plots are drawn with the **ggplot2** package (`ggp = TRUE`) and the parameter estimates will not be returned on the screen (`prnt = FALSE`). We can see that neither the exponential nor the beta distribution fit well to the data. The corresponding code is the following.
+If the user wants to assess the goodness of fit of the exponential and the beta distribution and compare these with the fit of the log-normal distribution, she/he has to specifically choose these distributions as it is done in the following example. Notice therein, that the user has to provide the limits of the beta distribution, because the default domain, the interval $(0, 1)$, does not cover the range of the sample’s survival times. Moreover, in this example, the plots are drawn with the **ggplot2** package (`ggp = TRUE`) and the parameter estimates will not be returned on the screen (`prnt = FALSE`, the default). We can see that neither the exponential nor the beta distribution fit well to the data. The corresponding code is the following.
 
 ```{r}
 cumhazPlot(times, delta, distr = c("exponential", "beta", "lognormal"), 
@@ -101,7 +102,7 @@ The **GofCens** package includes a function to graphically compare the Kaplan-Me
 For this purpose, each parametric estimation is individually added to the Kaplan-Meier estimator of $S(t)$. Likewise the `cumhazPlot()` function, this is done by default for the Weibull, Gumbel, log-logistic, logistic, log-normal, and normal distributions. Additionally, users have the option to choose the exponential and beta distributions. By default, the plots are generated using the **graphics** package, but setting the argument `ggp = TRUE` allows for the use of the **ggplot2** package. With both options, the pointwise $95\%$ confidence intervals are plotted.
 
 ```{r}
-kmPlot(times, delta, ggp = TRUE, prnt = FALSE)
+kmPlot(times, delta, ggp = TRUE)
 ```
 
 As expected, the log-normal distribution exhibits the best fit to the data. Nevertheless, based on the plots in this figure one might also consider the log-logistic distribution as a parametric model that fits well to the sample data.
@@ -117,16 +118,15 @@ In order to estimate the median and model the survival times parametrically, we 
 ```{r}
 data("nba")
 cumhazPlot(Surv(survtime, cens) ~ 1, nba, font.lab = 4, cex.lab = 1.3, 
-           prnt = FALSE, lwd = 3, colour = "blue")
+           lwd = 3, colour = "blue")
 ```
 
 According to the cumulative hazard plots above, the logistic distribution fits reasonably well to the data, even though the corresponding plot does not show a completely straight line of the points. In addition, we could also consider the normal distribution for parametric analyses of the survival times. To choose one of either distributions, we run the following code to draw probability and quantile-quantile plots with the `probPlot()` function. In addition, we estimate the parameter of the logistic distribution fitted to the data.
 
 ```{r}
 probPlot(Surv(survtime, cens) ~ 1, nba, distr = "logistic", ggp = TRUE, 
-         degs = 2)
-probPlot(Surv(survtime, cens) ~ 1, nba, distr = "normal", ggp = TRUE,
-         prnt = FALSE)
+         degs = 2, prnt = TRUE)
+probPlot(Surv(survtime, cens) ~ 1, nba, distr = "normal", ggp = TRUE)
 ```
 
 According to the plots exposed above, the logistic distribution appears to be a slightly better choice than the normal distribution, as the points in all four plots for the normal distribution show some curvature.
