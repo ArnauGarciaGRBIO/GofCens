@@ -691,9 +691,8 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
       cb[Mred + 1] <- Inf
       obsfreq <- n * diff(Fhat)
-      logiProb <- diff(do.call(pdistname, c(list(cb[1:(Mred + 1)]), as.list(thetahat))))
-      logiProb[1] <- logiProb[1] + do.call(pdistname, c(list(cb[1]), as.list(thetahat)))
-      v <- (obsfreq - n * logiProb) / sqrt(n * logiProb)
+      otherProb <- diff(do.call(pdistname, c(list(cb[1:(Mred + 1)]), as.list(thetahat))))
+      v <- (obsfreq - n * otherProb) / sqrt(n * otherProb)
       tn <- t(v) %*% v
       return(tn)
     }
