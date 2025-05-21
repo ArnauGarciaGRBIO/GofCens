@@ -68,6 +68,31 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       stop("Argument 'params0' requires values for the general vector theta.")
     }
   }
+
+  build_kn <- function(dim, pi, qi, ri){
+    if(length(pi)!= dim || length(qi) != (dim+1) || length(ri) != dim){
+      stop("Vector length is not correct")
+    }
+
+    Phi <- matrix(, nrow = dim, ncol = dim)
+    for(i in 1:dim){
+      for(j in 1:dim){
+        if(i == j){
+          Phi[i,j] <- 1/(ri[i]*qi[i]^2) + sum((pi[(i+1):dim]^2)/(ri[(i+1):dim] * qi[(i+1):dim]^2 *  qi[i:(dim-1)]^2))
+        } else if( i<j && j<dim ){
+          Phi[i,j] <- pi[j]^2/(ri[j] * qi[j-1] * qi[j]^2) + sum((pi[(j+1):dim]^2)/(ri[(j+1):dim] * qi[(j+1):dim]^2 *  qi[j:(dim-1)]^2))
+        } else if( i<j && j==dim ) {
+          Phi[i,j] <- pi[i]^2/(ri[dim] * qi[dim-1] * qi[dim]^2) + (pi[dim]^2)/(ri[dim] * qi[dim]^2 *  qi[dim]^2)
+        } else if(i>j){
+          Phi[i,j] <- Phi[j,i]
+        }
+      }
+    }
+    Phi[dim, dim] <- 1/(ri[dim]*qi[dim]^2)
+
+    return(Phi)
+  }
+
   bool_complete <- all(cens==1)
   rnd <- -log(tol, 10)
   times <- round(pmax(times, tol), rnd)
@@ -130,11 +155,17 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       expProb <- diff(pexp(cb[1:(Mred + 1)], 1 / betahat))
-      v <- (obsfreq - n * expProb) / sqrt(n * expProb)
-      tn <- t(v) %*% v
+      qi <- 1 - pexp(cb[1:(Mred+1)], 1/betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(expProb), expProb, qi, ri)
+      v <- (obsfreq - n * expProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     expRnd <- function(dat, mle) {
@@ -205,12 +236,17 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
-      gumbProb <- diff(pgumbel(cb[1:(M + 1)], muhat, betahat))
-      gumbProb[1] <- gumbProb[1] + pgumbel(cb[1], muhat, betahat)
-      v <- (obsfreq - n * gumbProb) / sqrt(n * gumbProb)
-      tn <- t(v) %*% v
+      gumbProb <- diff(pgumbel(cb[1:(Mred + 1)], muhat, betahat))
+      qi <- 1 - pgumbel(cb[1:(Mred+1)], muhat, betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(gumbProb), gumbProb, qi, ri)
+      v <- (obsfreq - n * gumbProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     gumbRnd <- function(dat, mle) {
@@ -271,11 +307,17 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       weiProb <- diff(pweibull(cb[1:(Mred + 1)], alphahat, betahat))
-      v <- (obsfreq - n * weiProb) / sqrt(n * weiProb)
-      tn <- t(v) %*% v
+      qi <- 1 - pweibull(cb[1:(Mred + 1)], alphahat, betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(weiProb), weiProb, qi, ri)
+      v <- (obsfreq - n * weiProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     weiRnd <- function(dat, mle) {
@@ -336,12 +378,18 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       normProb <- diff(pnorm(cb[1:(Mred + 1)], muhat, betahat))
       normProb[1] <- normProb[1] + pnorm(cb[1], muhat, betahat)
-      v <- (obsfreq - n * normProb) / sqrt(n * normProb)
-      tn <- t(v) %*% v
+      qi <- 1 - pnorm(cb[1:(Mred + 1)], muhat, betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(normProb), normProb, qi, ri)
+      v <- (obsfreq - n * normProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     normRnd <- function(dat, mle) {
@@ -402,11 +450,17 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       lnormProb <- diff(plnorm(cb[1:(Mred + 1)], muhat, betahat))
-      v <- (obsfreq - n * lnormProb) / sqrt(n * lnormProb)
-      tn <- t(v) %*% v
+      qi <- 1 - plnorm(cb[1:(Mred + 1)], muhat, betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(lnormProb), lnormProb, qi, ri)
+      v <- (obsfreq - n * lnormProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     lnormRnd <- function(dat, mle) {
@@ -467,12 +521,18 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       logiProb <- diff(plogis(cb[1:(Mred + 1)], muhat, betahat))
       logiProb[1] <- logiProb[1] + plogis(cb[1], muhat, betahat)
-      v <- (obsfreq - n * logiProb) / sqrt(n * logiProb)
-      tn <- t(v) %*% v
+      qi <- 1 - plogis(cb[1:(Mred + 1)], muhat, betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(logiProb), logiProb, qi, ri)
+      v <- (obsfreq - n * logiProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     logiRnd <- function(dat, mle) {
@@ -542,11 +602,17 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       llogiProb <- diff(pllogis(cb[1:(Mred + 1)], alphahat, scale = betahat))
-      v <- (obsfreq - n * llogiProb) / sqrt(n * llogiProb)
-      tn <- t(v) %*% v
+      qi <- 1 - pllogis(cb[1:(Mred + 1)], alphahat, scale = betahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(llogiProb), llogiProb, qi, ri)
+      v <- (obsfreq - n * llogiProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     llogiRnd <- function(dat, mle) {
@@ -609,12 +675,19 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       betaProb <- diff(pbeta(cb[1:(M + 1)] * (bBeta - aBeta) + aBeta, alphahat,
                              gammahat))
-      v <- (obsfreq - n * betaProb) / sqrt(n * betaProb)
-      tn <- t(v) %*% v
+      qi <- 1 - pbeta(cb[1:(M + 1)] * (bBeta - aBeta) + aBeta, alphahat,
+                      gammahat)
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(betaProb), betaProb, qi, ri)
+      v <- (obsfreq - n * betaProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     betaRnd <- function(dat, mle) {
@@ -674,14 +747,6 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       } else {
         thetahat <- theta0
       }
-      stimes <- sort(unique(dat$times[dat$cens == 1]))
-      KM <- summary(survfit(Surv(dat$times, dat$cens) ~ 1))$surv
-      nc <- length(KM)
-      Fn <- c(1 - KM, NA)
-      y0 <- c(do.call(pdistname, c(list(stimes), as.list(thetahat))), 1)
-      CvM <- nc * (sum(Fn[-(nc + 1)] * (y0[-1] - y0[-(nc + 1)]) *
-                         (Fn[-(nc + 1)] - (y0[-1] + y0[-(nc + 1)]))) + 1 / 3)
-
       survKM <- survfit(Surv(dat$times, dat$cens) ~ 1)
       cb <- unique(quantile(survKM, probs = seq(0, 1, 1 / M))$quantile)
       if (anyNA(cb)) {
@@ -689,11 +754,17 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       }
       Mred <- length(cb) - 1
       Fhat <- c(seq(0, 1, 1 / M)[1:Mred], 1)
-      cb[Mred + 1] <- Inf
+      cb[Mred + 2] <- Inf
       obsfreq <- n * diff(Fhat)
       otherProb <- diff(do.call(pdistname, c(list(cb[1:(Mred + 1)]), as.list(thetahat))))
-      v <- (obsfreq - n * otherProb) / sqrt(n * otherProb)
-      tn <- t(v) %*% v
+      qi <- 1 - do.call(pdistname, c(list(cb[1:(Mred + 1)]), as.list(thetahat)))
+      censKM <- survfit(Surv(times, 1 - cens) ~ 1)
+      Ghat <- c(summary(censKM, times = cb[1:(Mred + 1)])$surv, 0)
+      prodi <- (1-qi)/((qi)^2*(Ghat[1:(Mred+1)]))
+      ri <- diff(prodi)
+      Kn <- build_kn(length(otherProb), otherProb, qi, ri)
+      v <- (obsfreq - n * otherProb) / sqrt(n)
+      tn <- t(v) %*% Kn %*% v
       return(tn)
     }
     otherRnd <- function(dat, mle) {
@@ -723,7 +794,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
     output <- list(Distribution = distr,
                    Test = c("Statistic" = tn, "p-value" = pval),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML,
+                                 location = muML, scale = betaML,
                                  theta = thetaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE,
@@ -736,7 +807,7 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
                    Hypothesis = hypo,
                    Test = c("Statistic" = tn, "p-value" = pval),
                    Estimates = c(shape = alphaML, shape2 = gammaML,
-                                       location = muML, scale = betaML,
+                                 location = muML, scale = betaML,
                                  theta = thetaML),
                    StdErrors = c(shapeSE = alphaSE, shape2SE = gammaSE,
                                  locationSE = muSE, scaleSE = betaSE,
