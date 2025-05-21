@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GofCens</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -221,9 +221,9 @@
     <div id="references">
     <h2>References</h2>
     <p>J. R. Michael. <em>The Stabilized Probability Plot</em>. In: Biometrika 70 (1) (1983),
-  11-17.</p>
+  11-17. URL: https://doi.org/10.1093/biomet/70.1.11</p>
 <p>L.A. Waller and B.W. Turnbull. <em>Probability Plotting with Censored Data</em>. In:
-  American Statistician 46 (1) (1992), 5-12.</p>
+  American Statistician 46 (1) (1992), 5-12. URL: https://doi.org/10.1080/00031305.1992.10475837</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -236,53 +236,18 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">probPlot</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: exponential </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 145.449 (4.599)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 11961.65 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 11966.55 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="probPlot-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">probPlot</span><span class="op">(</span><span class="va">x</span>, distr <span class="op">=</span> <span class="st">"lognormal"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: log-normal </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 3.032 (0.063)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 1.982 (0.044)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 10275 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 10284.82 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="probPlot-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># P-P, Q-Q, SP, and EP plots for censored data using ggplot2</span></span></span>
 <span class="r-in"><span><span class="fu">probPlot</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">colon</span>, <span class="st">"weibull"</span>, ggp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: Weibull </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Shape (se): 0.796 (0.024)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 3529.763 (163.053)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 16575.45 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 16586.51 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="probPlot-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># P-P, Q-Q and SP plots for censored data and lognormal distribution</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nba</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">probPlot</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, <span class="st">"lognorm"</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PP"</span>, <span class="st">"QQ"</span>, <span class="st">"SP"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>         ggp <span class="op">=</span> <span class="cn">TRUE</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, nr <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: log-normal </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 4.287 (0.029)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 0.942 (0.021)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 9917.451 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 9930.02 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="probPlot-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

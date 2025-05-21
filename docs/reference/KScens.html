@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GofCens</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -73,8 +73,8 @@
 <span>                 <span class="st">"lognormal"</span>, <span class="st">"logistic"</span>, <span class="st">"loglogistic"</span>, <span class="st">"beta"</span><span class="op">)</span>,</span>
 <span>       betaLimits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, igumb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, BS <span class="op">=</span> <span class="fl">999</span>,</span>
 <span>       params0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, shape2 <span class="op">=</span> <span class="cn">NULL</span>, location <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                      scale <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
-<span>       tol <span class="op">=</span> <span class="fl">1e-04</span>, boot <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>                      scale <span class="op">=</span> <span class="cn">NULL</span>, theta <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>       tol <span class="op">=</span> <span class="fl">1e-04</span>, boot <span class="op">=</span> <span class="cn">TRUE</span>, start <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span><span class="co"># S3 method for class 'formula'</span></span>
 <span><span class="fu">KScens</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -95,7 +95,10 @@
                the Weibull (<code>"weibull"</code>), the Gumbel (<code>"gumbel"</code>),
                the normal (<code>"normal"</code>), the lognormal (<code>"lognormal"</code>),
                the logistic (<code>"logistic"</code>), the loglogistic (<code>"loglogistic"</code>),
-               and the beta (<code>"beta"</code>) distribution.</p></dd>
+               and the beta (<code>"beta"</code>) distribution. In addition, if the
+               character string used is <code>"name"</code>, every distribution for which the
+               corresponiding density (<code>dname</code>), probability (<code>pname</code>)
+               and random generator (<code>rname</code>) functions are defined, can be used.</p></dd>
 
   <dt id="arg-betalimits">betaLimits<a class="anchor" aria-label="anchor" href="#arg-betalimits"></a></dt>
 <dd><p>Two-components vector with the lower and upper bounds of the
@@ -128,8 +131,16 @@
 <dd><p>Logical to indicate if the p-value is computed using bootstrapping or using the
               the modified Kolmogorov-Smirnov test (see details). Default is <code>TRUE</code>.</p></dd>
 
+  <dt id="arg-start">start<a class="anchor" aria-label="anchor" href="#arg-start"></a></dt>
+<dd><p>A named list giving the initial values of parameters of the named
+               distribution or a function of data computing initial values and
+               returning a named list. This argument may be omitted (default)
+               for the eight prespecified distributions. See more details in
+               <a href="https://lbbe-software.github.io/fitdistrplus/reference/mledist.html" class="external-link">mledist</a>.</p></dd>
+
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments.</p></dd>
+<dd><p>Additional arguments for the <code>boot</code> function of the
+    <span class="pkg">boot</span> package.</p></dd>
 
 </dl></div>
     <div id="details">
@@ -187,7 +198,7 @@
     <div id="references">
     <h2>References</h2>
     <p>T. R. Fleming et al. <em>Modified Kolmogorov-Smirnov test procedure with application
-to arbitrarily right-censored data</em>. In: Biometrics 36 (1980), 607-625.</p>
+to arbitrarily right-censored data</em>. In: Biometrics 36 (1980), 607-625. URL: https://doi.org/10.2307/2556114</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -205,81 +216,53 @@ to arbitrarily right-censored data</em>. In: Biometrics 36 (1980), 607-625.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Complete data with bootstrapping</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">KScens</span><span class="op">(</span>times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">rweibull</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">12</span>, scale <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, distr <span class="op">=</span> <span class="st">"weibull"</span>, BS <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: weibull </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null hypothesis: the data follows a weibull distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KS Test results:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A p-value </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   0.528   0.670 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates (se):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> shape             scale             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12.241 (0.938)     4 (0.034)     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC: 84.375 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC: 89.585 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Censored data with bootstrapping</span></span></span>
 <span class="r-in"><span><span class="fu">KScens</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">colon</span>, distr <span class="op">=</span> <span class="st">"norm"</span>, BS <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: normal </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null hypothesis: the data follows a norm distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KS Test results:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A p-value </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   8.707   0.010 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates (se):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> location          scale             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2189.942 (47.565)     1662.442 (44.129)     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC: 17621.96 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC: 17633.01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Censored data using the modified test</span></span></span>
 <span class="r-in"><span><span class="fu">KScens</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">colon</span>, distr <span class="op">=</span> <span class="st">"norm"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: normal </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null hypothesis: the data follows a norm distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KS Test results:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A p-value </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   8.707   0.000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates (se):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> location          scale             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2189.942 (47.565)     1662.442 (44.129)     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC: 17621.96 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC: 17633.01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nba</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">KScens</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, <span class="st">"logis"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, degs <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: logistic </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">KScens</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, <span class="st">"logis"</span>, boot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, degs <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: logis </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KS Test results:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A p-value </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2.1     0.0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2.099   0.000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates (se):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> location        scale           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53.08 (0.46)     9.01 (0.22)     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> theta1            theta2            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53.077 (0.457)     9.013 (0.218)     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC: 8460.3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC: 8472.87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AIC: 8460.297 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> BIC: 8472.866 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">KScens</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, <span class="st">"beta"</span>, betaLimits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">80</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       boot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Distribution: beta </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null hypothesis: the data follows a beta distribution </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> KS Test results:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A p-value </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   3.739   0.000 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates (se):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> shape             shape2            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2.523 (0.091)     1.316 (0.064)     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AIC: 1126.562 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> BIC: 1139.131 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

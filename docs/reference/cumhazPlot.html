@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GofCens</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -183,68 +183,11 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">rlogis</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">50</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cumhazPlot</span><span class="op">(</span><span class="va">x</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> weibull</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Shape (se): 5.934 (0.136)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 53.593 (0.302)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 7287.137 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 7296.952 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> loglogistic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Shape (se): 9.732 (0.258)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 49.592 (0.277)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 7258.912 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 7268.728 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lognormal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 3.892 (0.006)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 0.197 (0.004)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 7374.022 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 7383.838 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> gumbel</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 45.364 (0.334)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 9.963 (0.205)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 7512.212 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 7522.028 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> logistic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 49.919 (0.272)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 4.962 (0.131)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 7207.713 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 7217.529 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> normal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 49.899 (0.285)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 9.002 (0.201)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 7236.688 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 7246.504 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="cumhazPlot-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Censored data comparing three distributions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nba</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cumhazPlot</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"expo"</span>, <span class="st">"normal"</span>, <span class="st">"gumbel"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> exponential</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 123.133 (4.189)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 10047.32 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 10053.6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> normal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 53.004 (0.518)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 16.977 (0.368)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 8512.579 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 8525.148 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> gumbel</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 47.493 (0.626)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 22.362 (0.489)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 8773.697 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 8786.266 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="cumhazPlot-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

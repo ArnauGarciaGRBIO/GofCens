@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GofCens</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -89,51 +89,13 @@
     <h2>Source</h2>
     <p>J. A. Martínez, K. Langohr, J. Felipo, L. Consuegra and M. Casals. <em>Data set on
 mortality of national basketball association (NBA) players.</em> In: Data in Brief,
-45 (2022).</p>
+45 (2022). URL: https://doi.org/10.1016/j.dib.2022.108615</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nba</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="cumhazPlot.html">cumhazPlot</a></span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter estimates</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> weibull</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Shape (se): 3.065 (0.078)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 59.858 (0.745)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 8823.07 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 8835.639 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> loglogistic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Shape (se): 3.289 (0.088)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 56.138 (0.833)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 9051.418 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 9063.987 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lognormal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 4.287 (0.029)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 0.942 (0.021)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 9917.451 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 9930.02 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> gumbel</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 47.493 (0.626)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 22.362 (0.489)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 8773.697 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 8786.266 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> logistic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 53.077 (0.457)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 9.013 (0.218)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 8460.297 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 8472.866 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> normal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Location (se): 53.004 (0.518)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Scale (se): 16.977 (0.368)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    AIC: 8512.579 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    BIC: 8525.148 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-plt img"><img src="nba-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
