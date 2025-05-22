@@ -83,7 +83,7 @@ An object of class \code{"ADcens"} is a list containing the following components
   G. Marsaglia and J. Marsaglia. \emph{Evaluating the Aderson-Darling Distrinution}. In: Journal os Statistical Software, Articles, 9 (2) (2004), 1-5. URL: https://doi.org/10.18637/jss.v009.i02
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. García, G. Gómez.}
 
 \section{Warning }{If the amount of data is large, the execution time of the
   function can be elevated. The parameter \code{BS} can
