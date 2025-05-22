@@ -11,7 +11,7 @@
 \usage{
 \method{cumhazPlot}{default}(times, cens = rep(1, length(times)), distr = "all6", colour = 1,
            betaLimits = c(0, 1), igumb = c(10, 10), ggp = FALSE, m = NULL,
-           prnt = TRUE, degs = 3, print.AIC = TRUE, print.BIC = TRUE,
+           prnt = FALSE, degs = 3, print.AIC = TRUE, print.BIC = TRUE,
            outp = c("list", "table"), ...)
 \method{cumhazPlot}{formula}(formula, data, ...)
 }

@@ -78,6 +78,7 @@ Print, summary and print summary methods for \code{ADcens}, \code{chisqcens},
   \item{print.infoBoot}{Logical to indicate if the number of bootstrap samples used should be printed. Default is \code{FALSE}}
   \item{degs}{Integer indicating the number of decimal places of the numeric
     results of the output. By default is 3.}
+  \item{\dots}{Optional arguments.}
 }
 \details{
 \describe{

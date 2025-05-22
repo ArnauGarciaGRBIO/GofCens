@@ -15,7 +15,7 @@
          colour = c("green4", "deepskyblue4", "yellow3",
                     "mediumvioletred"), mtitle = TRUE, ggp = FALSE,
          m = NULL, betaLimits = c(0, 1), igumb = c(10, 10),
-         prnt = TRUE, degs = 3,
+         prnt = FALSE, degs = 3,
          params0 = list(shape = NULL, shape2 = NULL,
                         location = NULL, scale = NULL), print.AIC = TRUE,
                         print.BIC = TRUE, ...)
