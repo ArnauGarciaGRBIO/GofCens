@@ -68,7 +68,6 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
       stop("Argument 'params0' requires values for the general vector theta.")
     }
   }
-
   build_kn <- function(dim, pi, qi, ri){
     if(length(pi)!= dim || length(qi) != (dim+1) || length(ri) != dim){
       stop("Vector length is not correct")
@@ -92,7 +91,6 @@ chisqcens.default <- function(times, cens = rep(1, length(times)), M,
 
     return(Phi)
   }
-
   bool_complete <- all(cens==1)
   rnd <- -log(tol, 10)
   times <- round(pmax(times, tol), rnd)
