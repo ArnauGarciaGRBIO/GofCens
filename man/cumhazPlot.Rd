@@ -11,7 +11,8 @@
 \usage{
 \method{cumhazPlot}{default}(times, cens = rep(1, length(times)), distr = "all6", colour = 1,
            betaLimits = c(0, 1), igumb = c(10, 10), ggp = FALSE, m = NULL,
-           prnt = TRUE, degs = 3, print.AIC = TRUE, print.BIC = TRUE,...)
+           prnt = TRUE, degs = 3, print.AIC = TRUE, print.BIC = TRUE,
+           outp = c("list", "table"), ...)
 \method{cumhazPlot}{formula}(formula, data, ...)
 }
 
@@ -46,6 +47,7 @@
   \item{data}{Data frame for variables in \code{formula}.}
   \item{print.AIC}{Logical to indicate if the AIC of the model should be printed. Default is \code{TRUE}}
   \item{print.BIC}{Logical to indicate if the BIC of the model should be printed. Default is \code{TRUE}}
+  \item{outp}{Indicator of how the output will be displayed. The possible formats are \code{list} and \code{table}.}
   \item{\dots}{Optional arguments for function \code{par}, if \code{ggplo = FALSE}.}
 }
 
@@ -82,5 +84,6 @@ cumhazPlot(x, lwd = 2)
 
 # Censored data comparing three distributions
 data(nba)
-cumhazPlot(Surv(survtime, cens) ~ 1, nba, distr = c("expo", "normal", "gumbel"))
+cumhazPlot(Surv(survtime, cens) ~ 1, nba, distr = c("expo", "normal", "gumbel"),
+           outp = "table")
 }

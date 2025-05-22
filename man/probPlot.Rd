@@ -1,5 +1,7 @@
 \name{probPlot}
 \alias{probPlot}
+\alias{probPlot.formula}
+\alias{probPlot.default}
 \title{Probability plots to check the goodness of fit of parametric models}
 \description{
 \code{probPlot} provides four types of probability plots: P-P plot, Q-Q plot, Stabilised probability plot, and Empirically Rescaled plot to check if a certain distribution is an appropiate choice for the data.

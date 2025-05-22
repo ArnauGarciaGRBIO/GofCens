@@ -122,7 +122,7 @@ cens <- as.numeric(survt <= censt)
 
 # Print method
 set.seed(123)
-CvMcens(times, cens, distr = "weiubll", BS = 99)
+CvMcens(times, cens, distr = "weibull", BS = 99)
 
 # List output from summary method
 set.seed(123)
