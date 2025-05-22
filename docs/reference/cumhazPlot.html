@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GofCens</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
       </span>
     </div>
 
@@ -68,7 +68,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># Default S3 method</span></span>
 <span><span class="fu">cumhazPlot</span><span class="op">(</span><span class="va">times</span>, cens <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span><span class="op">)</span>, distr <span class="op">=</span> <span class="st">"all6"</span>, colour <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>           betaLimits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, igumb <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, ggp <span class="op">=</span> <span class="cn">FALSE</span>, m <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>           prnt <span class="op">=</span> <span class="cn">TRUE</span>, degs <span class="op">=</span> <span class="fl">3</span>, print.AIC <span class="op">=</span> <span class="cn">TRUE</span>, print.BIC <span class="op">=</span> <span class="cn">TRUE</span>,<span class="va">...</span><span class="op">)</span></span>
+<span>           prnt <span class="op">=</span> <span class="cn">FALSE</span>, degs <span class="op">=</span> <span class="fl">3</span>, print.AIC <span class="op">=</span> <span class="cn">TRUE</span>, print.BIC <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>           outp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="st">"table"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span><span class="co"># S3 method for class 'formula'</span></span>
 <span><span class="fu">cumhazPlot</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -134,6 +135,9 @@
   <dt id="arg-print-bic">print.BIC<a class="anchor" aria-label="anchor" href="#arg-print-bic"></a></dt>
 <dd><p>Logical to indicate if the BIC of the model should be printed. Default is <code>TRUE</code></p></dd>
 
+  <dt id="arg-outp">outp<a class="anchor" aria-label="anchor" href="#arg-outp"></a></dt>
+<dd><p>Indicator of how the output will be displayed. The possible formats are <code>list</code> and <code>table</code>.</p></dd>
+
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Optional arguments for function <code>par</code>, if <code>ggplo = FALSE</code>.</p></dd>
 
@@ -187,7 +191,8 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Censored data comparing three distributions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">nba</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cumhazPlot</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"expo"</span>, <span class="st">"normal"</span>, <span class="st">"gumbel"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cumhazPlot</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">survtime</span>, <span class="va">cens</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">nba</span>, distr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"expo"</span>, <span class="st">"normal"</span>, <span class="st">"gumbel"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>           outp <span class="op">=</span> <span class="st">"table"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="cumhazPlot-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>

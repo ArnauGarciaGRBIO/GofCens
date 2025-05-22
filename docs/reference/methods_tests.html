@@ -18,7 +18,7 @@ CvMcens, gofcens and KScens objects."><!-- mathjax --><script src="https://cdnjs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GofCens</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5</span>
       </span>
     </div>
 
@@ -144,6 +144,9 @@ CvMcens, gofcens and KScens objects."><!-- mathjax --><script src="https://cdnjs
 <dd><p>Integer indicating the number of decimal places of the numeric
     results of the output. By default is 3.</p></dd>
 
+  <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Optional arguments.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -200,8 +203,13 @@ CvMcens, gofcens and KScens objects."><!-- mathjax --><script src="https://cdnjs
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Print method</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="CvMcens.html">CvMcens</a></span><span class="op">(</span><span class="va">times</span>, <span class="va">cens</span>, distr <span class="op">=</span> <span class="st">"weiubll"</span>, BS <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in CvMcens.default(times, cens, distr = "weiubll", BS = 99):</span> The  dweiubll  function must be defined</span>
+<span class="r-in"><span><span class="fu"><a href="CvMcens.html">CvMcens</a></span><span class="op">(</span><span class="va">times</span>, <span class="va">cens</span>, distr <span class="op">=</span> <span class="st">"weibull"</span>, BS <span class="op">=</span> <span class="fl">99</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null hypothesis: the data follows a weibull distribution </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CvM Test results:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CvM p-value </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.376   0.010 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List output from summary method</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
