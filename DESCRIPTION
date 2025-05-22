@@ -1,8 +1,8 @@
 Package: GofCens
 Type: Package
 Title: Goodness-of-Fit Methods for Right-Censored Data
-Version: 1.2.1
-Date: 2024-11-9
+Version: 1.5
+Date: 2025-05-22
 Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
                     email = "klaus.langohr@upc.edu",
                     comment = c(ORCID = '0000-0001-7075-9192')),
