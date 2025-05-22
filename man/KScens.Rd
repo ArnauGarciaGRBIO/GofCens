@@ -4,9 +4,10 @@
 \alias{KScens.default}
 \title{Kolmogorov-Smirnov test for complete and right-censored data}
 \description{
-  Function \code{KScens} computes the Kolmogorov-Smirnov statistic and p-value for complete
-  and right-censored data against eight possible distributions using either bootsrapping or
-  a modified test.
+  Function \code{KScens} computes the Kolmogorov-Smirnov statistic and p-value for
+  right-censored data against eight possible predefined or user-specified distributions
+  using either bootstrapping or a modified test. This function also accounts for
+  complete data.
 }
 
 \usage{

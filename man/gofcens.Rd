@@ -6,8 +6,9 @@
        complete and right-censored data}
 \description{
   Function \code{gofcens} computes the Kolmogorov-Smirnov, Cramér-von Mises, and
-  Anderson-Darling statistics ans p-values for complete and right-censored data against
-  eight possible distributions using bootstrapping.
+  Anderson-Darling statistics and p-values for right-censored data against eight
+  possible predefined or user-specified distributions using bootstrapping. This
+  function also accounts for complete data.
 }
 \usage{
 \method{gofcens}{default}(times, cens = rep(1, length(times)),

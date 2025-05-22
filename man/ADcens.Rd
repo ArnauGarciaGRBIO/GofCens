@@ -4,8 +4,9 @@
 \alias{ADcens.default}
 \title{Anderson-Darling test for complete and right-censored data}
 \description{
-  Function \code{ADcens} computes the Anderson-Darling test statistic and p-value for complete
-  and right-censored data against eight possible distributions using bootstrapping.
+  Function \code{ADcens} computes the Anderson-Darling test statistic and p-value for
+  right-censored data against eight possible predefined or user-specified distributions
+  using bootstrapping. This function also accounts for complete data.
 }
 \usage{
 \method{ADcens}{default}(times, cens = rep(1, length(times)),

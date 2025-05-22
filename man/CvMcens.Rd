@@ -4,8 +4,9 @@
 \alias{CvMcens.default}
 \title{Cramér-von Mises test for complete and right-censored data}
 \description{
-  Function \code{CvMcens} computes the Cramér-von Mises statistic and p-value for complete
-  and right-censored data against eight possible distributions.
+  Function \code{CvMcens} computes the Cramér-von Mises test statistic and p-value for
+  right-censored data against eight possible predefined or user-specified distributions
+  using bootstrapping. This function also accounts for complete data.
 }
 \usage{
 \method{CvMcens}{default}(times, cens = rep(1, length(times)),
