@@ -136,6 +136,7 @@ ADcens.default <- function(times, cens = rep(1, length(times)),
       out$times <- pmin(survtimes, censtimes)
       out$cens <- as.numeric(survtimes < censtimes)
       out
+
     }
     beta <- ifelse(is.null(beta0), betaML, beta0)
     bts <- boot(data.frame(times, cens), expStat, R = BS, sim = "parametric",
