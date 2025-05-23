@@ -1,10 +1,10 @@
 print.CvMcens <- function(x, ...) {
-  if(!inherits(x, "CvMcens")){
+  if (!inherits(x, "CvMcens")) {
     stop("Use only 'CvMcens' objects")
   }
   cat("Null hypothesis: the data follows a",
       x$Distribution, "distribution \n")
-  if(!is.null(x$Hypothesis)){
+  if (!is.null(x$Hypothesis)) {
     cat("\nParameters:\n")
     print(x$Hypothesis)
   }

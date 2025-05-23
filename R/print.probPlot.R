@@ -51,10 +51,10 @@ print.probPlot <- function(x, ...) {
             round(x$outp$interval.domain[2], x$degs), "\n")
       }
       cat("\n")
-      if(x$print.AIC){
+      if (x$print.AIC) {
         cat( "   AIC:", round(x$outp$aic, x$degs), "\n")
       }
-      if(x$print.BIC){
+      if (x$print.BIC) {
         cat( "   BIC:", round(x$outp$bic, x$degs), "\n")
       }
       cat("\n")

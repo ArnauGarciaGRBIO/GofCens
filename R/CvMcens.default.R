@@ -18,11 +18,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
   if (!is.list(params0)) {
     stop("params0 must be a list!")
   }
-  if(length(distr)>1){
+  if (length(distr)>1) {
     stop("Distribution must be specified!")
   }
   if (distr %in% c("exponential", "gumbel", "weibull", "normal",
-                   "lognormal", "logistic", "loglogistic", "beta")){
+                   "lognormal", "logistic", "loglogistic", "beta")) {
     other <- FALSE
   } else {
     other <- TRUE
@@ -40,7 +40,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       stop(paste("The ", rdistname, " function must be defined"))
     }
     start.arg <- start
-    if(is.vector(start.arg)) {
+    if (is.vector(start.arg)) {
       start.arg <- as.list(start.arg)
     }
   }
@@ -84,7 +84,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(beta0)) {
       hypo <- c(scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "exp")
       muu <- unname(paramsML$estimate)
       betaML <- 1 / muu
@@ -101,7 +101,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     }
     expStat <- function(dat) {
       if (is.null(beta0)) {
-        if(bool_complete){
+        if (bool_complete) {
           dd <- data.frame(left = as.vector(dat$times),
                            right = ifelse(dat$cens == 1, dat$times, NA))
           muu <- unname(coefficients(fitdist(dd$left, "exp")))
@@ -126,7 +126,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     expRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rexp(n, mle), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -142,7 +142,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- try(suppressMessages(fitdist(dd$left, "gumbel",
                                                    start = list(alpha = igumb[1],
                                                                 scale = igumb[2]))),
@@ -171,7 +171,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist(dd$left, "gumbel", start = list(alpha = muML,
                                                                scale = betaML))
         } else {
@@ -196,7 +196,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     gumbRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rgumbel(n, mle[1], mle[2]), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -218,7 +218,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(alpha0) && !is.null(beta0)) {
       hypo <- c(shape = alpha0, scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "weibull")
     } else {
       paramsML <- fitdistcens(dd, "weibull")
@@ -233,7 +233,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(alpha0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist(dd$left, "weibull")
         } else {
           paramsBSML <- fitdistcens(dd, "weibull")
@@ -256,7 +256,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     weiRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rweibull(n, mle[1], mle[2]), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -278,7 +278,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "norm")
     } else {
       paramsML <- fitdistcens(dd, "norm")
@@ -293,7 +293,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist(dd$left, "norm")
         } else {
           paramsBSML <- fitdistcens(dd, "norm")
@@ -316,7 +316,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     normRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rnorm(n, mle[1], mle[2]), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -338,7 +338,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "lnorm")
     } else {
       paramsML <- fitdistcens(dd, "lnorm")
@@ -353,7 +353,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist(dd$left, "lnorm")
         } else {
           paramsBSML <- fitdistcens(dd, "lnorm")
@@ -376,7 +376,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     lnormRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rlnorm(n, mle[1], mle[2]), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -398,7 +398,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(mu0) && !is.null(beta0)) {
       hypo <- c(location = mu0, scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "logis")
     } else {
       paramsML <- fitdistcens(dd, "logis")
@@ -413,7 +413,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(mu0) || is.null(beta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist(dd$left, "logis")
         } else {
           paramsBSML <- fitdistcens(dd, "logis")
@@ -436,7 +436,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     logiRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rlogis(n, mle[1], mle[2]), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -458,7 +458,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     if (!is.null(alpha0) && !is.null(beta0)) {
       hypo <- c(shape = alpha0, scale = beta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "llogis")
       alphaML <- unname(coefficients(paramsML))[1]
       betaML <- unname(coefficients(paramsML))[2]
@@ -477,7 +477,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     }
     llogiStat <- function(dat) {
       if (is.null(alpha0) || is.null(beta0)) {
-        if(bool_complete){
+        if (bool_complete) {
           dd <- data.frame(left = as.vector(dat$times),
                            right = ifelse(dat$cens == 1, dat$times, NA))
           paramsBML <- fitdist(dd$left, "llogis")
@@ -505,7 +505,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     llogiRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rllogis(n, mle[1], scale = mle[2]), tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
       censtimes[is.na(censtimes)] <- Inf
@@ -529,7 +529,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     }
     aBeta <- betaLimits[1]
     bBeta <- betaLimits[2]
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
     } else {
       paramsML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
@@ -544,7 +544,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(alpha0) || is.null(gamma0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
         } else {
           paramsBSML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")
@@ -567,7 +567,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     betaRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(rbeta(n, mle[1], mle[2]) * (bBeta - aBeta) + aBeta,
                               tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
@@ -586,12 +586,11 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     bts <- boot(data.frame(times, cens), betaStat, R = BS, sim = "parametric",
                 ran.gen = betaRnd, mle = c(alpha, gamma), ...)
   }
-
   if (other) {
     if (!is.null(theta0)) {
       hypo <- c(theta = theta0)
     }
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, distname, start = start)
     } else {
       paramsML <- fitdistcens(dd, distname, start = start)
@@ -599,7 +598,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     n_params <- length(paramsML$estimate)
     thetaML <- numeric(n_params)
     thetaSE <- numeric(n_params)
-    for(i in 1:n_params){
+    for(i in 1:n_params) {
       thetaML[i] <- unname(paramsML$estimate[i])
       thetaSE[i] <- unname(paramsML$sd[i])
     }
@@ -609,13 +608,13 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
       if (is.null(theta0)) {
         dd <- data.frame(left = as.vector(dat$times),
                          right = ifelse(dat$cens == 1, dat$times, NA))
-        if(bool_complete){
+        if (bool_complete) {
           paramsBSML <- fitdist(dd$left, distname, start = start)
         } else {
           paramsBSML <- fitdistcens(dd, distname, start = start)
         }
         thetahat <- numeric(n_params)
-        for(i in 1:n_params){
+        for(i in 1:n_params) {
           thetahat[i] <- unname(paramsBSML$estimate[i])
         }
       } else {
@@ -633,7 +632,7 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     otherRnd <- function(dat, mle) {
       out <- dat
       n <- nrow(dat)
-      unifn <- runif(n)
+      unifn <- runif (n)
       survtimes <- round(pmax(do.call(rdistname, c(list(n), as.list(mle))),
                               tol), rnd)
       censtimes <- as.vector(quantile(censKM, unifn)$quantile)
@@ -650,7 +649,6 @@ CvMcens.default <- function(times, cens = rep(1, length(times)),
     bts <- boot(data.frame(times, cens), otherStat, R = BS, sim = "parametric",
                 ran.gen = otherRnd, mle = theta, ...)
   }
-
   CvM <- bts$t0
   pval <- (sum(bts$t[, 1] > bts$t0[1]) + 1) / (bts$R + 1)
   if (all(sapply(params0, is.null))) {

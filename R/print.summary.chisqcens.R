@@ -1,4 +1,4 @@
-print.summary.chisqcens <- function(x, degs = 3, ...){
+print.summary.chisqcens <- function(x, degs = 3, ...) {
   if (x$outp == "table") {
     cat("Distribution:", x$Distribution, "\n")
     if (!is.null(x$Hypothesis)) {
@@ -62,14 +62,14 @@ print.summary.chisqcens <- function(x, degs = 3, ...){
     cat(sprintf("%s | %s\n", strrep("-", max_col_width),
                 strrep("-", max_col_width)))
     cat("\n")
-    if(x$print.AIC){
+    if (x$print.AIC) {
       cat( "AIC:", round(x$aic, degs), "\n")
     }
-    if(x$print.BIC){
+    if (x$print.BIC) {
       cat( "BIC:", round(x$bic, degs), "\n")
     }
     cat("\n")
-    if(x$print.infoBoot){
+    if (x$print.infoBoot) {
       cat( "Number of bootstrap samples:", x$BS, "\n")
       cat("\n")
     }
@@ -88,7 +88,7 @@ print.summary.chisqcens <- function(x, degs = 3, ...){
           strrep(" ", 5), sep = "")
     }
     cat("\n")
-    for(i in 1:length(x$Estimates)){
+    for(i in 1:length(x$Estimates)) {
       cat(unname(round(x$Estimates, degs))[i], " ",
           "(", unname(round(x$StdErrors, degs))[i], ")", strrep(" ", 5),sep = "")
     }
@@ -96,14 +96,14 @@ print.summary.chisqcens <- function(x, degs = 3, ...){
     cat("\nCell numbers:\n")
     print(x$Cellnumber)
     cat("\n")
-    if(x$print.AIC){
+    if (x$print.AIC) {
       cat( "AIC:", round(x$aic, degs), "\n")
     }
-    if(x$print.BIC){
+    if (x$print.BIC) {
       cat( "BIC:", round(x$bic, degs), "\n")
     }
     cat("\n")
-    if(x$print.infoBoot){
+    if (x$print.infoBoot) {
       cat( "Number of bootstrap samples:", x$BS, "\n")
       cat("\n")
     }

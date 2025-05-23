@@ -1,6 +1,6 @@
 plot.probPlot <- function(x, ...) {
   index <- 0
-  if ("ER" %in% x$plots){
+  if ("ER" %in% x$plots) {
     for (i in 1:length(x$uPoint)) {
       while (x$theorQQ[i] > x$empiricF[1, index + 1]) {
         index <- index + 1
@@ -10,7 +10,6 @@ plot.probPlot <- function(x, ...) {
       }
     }
   }
-
   howmany <- length(x$plots)
   nCol <- length(x$colour)
   if (is.null(x$m)) {

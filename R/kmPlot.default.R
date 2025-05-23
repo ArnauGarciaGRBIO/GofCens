@@ -48,7 +48,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("exponential" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitExpo <- fitdist(dd$left, "exp")
         muu <- unname(fitExpo$estimate)
         params$exponential <- 1 / muu
@@ -75,7 +75,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("gumbel" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitGumb <- try(suppressMessages(fitdist(dd$left, "gumbel",
                                                 start = list(alpha = igumb[1],
                                                              scale = igumb[2]))))
@@ -108,7 +108,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("weibull" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitWei <- fitdist(dd$left, "weibull")
       } else {
         fitWei <- fitdistcens(dd, "weibull")
@@ -128,7 +128,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("normal" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitNorm <- fitdist(dd$left, "norm")
       } else {
         fitNorm <- fitdistcens(dd, "norm")
@@ -149,7 +149,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("logistic" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitLog <- fitdist(dd$left, "logis")
       } else {
         fitLog <- fitdistcens(dd, "logis")
@@ -169,7 +169,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("lognormal" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitLnorm <- fitdist(dd$left, "lnorm")
       } else {
         fitLnorm <- fitdistcens(dd, "lnorm")
@@ -190,7 +190,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
   }
   if ("loglogistic" %in% distributions) {
     tryCatch({
-      if(bool_complete){
+      if (bool_complete) {
         fitLoglog <- fitdist(dd$left, "llogis")
         shapeLoglogis <- unname(coefficients(fitLoglog))[1]
         scaleLoglogis <- unname(coefficients(fitLoglog))[2]
@@ -225,7 +225,7 @@ kmPlot.default <- function(times, cens = rep(1, length(times)),
     tryCatch({
       aBeta <- betaLimits[1]
       bBeta <- betaLimits[2]
-      if(bool_complete){
+      if (bool_complete) {
         fitBeta <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
       } else {
         fitBeta <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")

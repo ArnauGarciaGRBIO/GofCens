@@ -1,10 +1,10 @@
 print.gofcens <- function(x, ...) {
-  if(!inherits(x, "gofcens")){
+  if (!inherits(x, "gofcens")) {
     stop("Use only 'gofcens' objects")
   }
   cat("Null hypothesis: the data follows a",
       x$Distribution, "distribution \n")
-  if(!is.null(x$Hypothesis)){
+  if (!is.null(x$Hypothesis)) {
     cat("\nParameters:\n")
     print(x$Hypothesis)
   }

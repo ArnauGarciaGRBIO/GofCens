@@ -65,7 +65,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
   theorPP <- NULL
   theorQQ <- NULL
   if (distr == "exponential") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "exp")
       muu <- unname(paramsML$estimate)
       betaML <- 1 / muu
@@ -93,12 +93,12 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     if ("PP" %in% plots || "SP" %in% plots) {
       theorPP <- pexp(tim, rateExp)
     }
-    if ("QQ" %in% plots || "ER" %in% plots){
+    if ("QQ" %in% plots || "ER" %in% plots) {
       theorQQ <- qexp(1 - survTim, rateExp)
     }
   }
   if (distr == "gumbel") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- try(suppressMessages(fitdist(dd$left, "gumbel",
                                                start = list(alpha = igumb[1],
                                                             scale = igumb[2]))),
@@ -147,7 +147,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "weibull") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "weibull")
     } else {
       paramsML <- fitdistcens(dd, "weibull")
@@ -182,7 +182,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "normal") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "norm")
     } else {
       paramsML <- fitdistcens(dd, "norm")
@@ -217,7 +217,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "lognormal") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "lnorm")
     } else {
       paramsML <- fitdistcens(dd, "lnorm")
@@ -252,7 +252,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "logistic") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "logis")
     } else {
       paramsML <- fitdistcens(dd, "logis")
@@ -287,7 +287,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
     }
   }
   if (distr == "loglogistic") {
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist(dd$left, "llogis")
       alphaML <- unname(coefficients(paramsML))[1]
       betaML <- unname(coefficients(paramsML))[2]
@@ -330,7 +330,7 @@ probPlot.default <- function(times, cens = rep(1, length(times)),
   if (distr == "beta") {
     aBeta <- betaLimits[1]
     bBeta <- betaLimits[2]
-    if(bool_complete){
+    if (bool_complete) {
       paramsML <- fitdist((dd$left - aBeta) / (bBeta - aBeta), "beta")
     } else {
       paramsML <- fitdistcens((dd - aBeta) / (bBeta - aBeta), "beta")

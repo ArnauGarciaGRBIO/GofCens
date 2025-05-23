@@ -30,10 +30,10 @@ print.kmPlot <- function(x, ...) {
                 round(x$params[[dist]]$domain[2],x$degs), "\n")
           }
         }
-        if(x$print.AIC){
+        if (x$print.AIC) {
           cat( "   AIC:", round(x$aic[[dist]], x$degs), "\n")
         }
-        if(x$print.BIC){
+        if (x$print.BIC) {
           cat( "   BIC:", round(x$bic[[dist]], x$degs), "\n")
         }
         cat("\n")
