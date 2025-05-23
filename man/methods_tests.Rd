@@ -128,11 +128,11 @@ CvMcens(times, cens, distr = "weibull", BS = 99)
 # List output from summary method
 set.seed(123)
 summary(ADcens(times = rweibull(100, 12, scale = 4), distr = "weibull",
-       BS = 149))
+        BS = 149))
 
 # Table output from summary method
 set.seed(123)
 summary(ADcens(times = rweibull(100, 12, scale = 4), distr = "weibull",
-             BS = 99), outp = "table")
+               BS = 99), outp = "table")
 }
 
