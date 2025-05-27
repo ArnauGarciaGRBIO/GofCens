@@ -38,7 +38,7 @@
 
   The list of the parameters of the theoretical distribution can be set manually using the argument \code{params} of each function. In that case, the correspondence is: \eqn{\alpha} is the \code{shape} value, \eqn{\gamma} is the \code{shape2} value, \eqn{\mu} is the \code{location} value and \eqn{\beta} is the \code{scale} value.
 
-  In addition, the functions \code{KScens}, \code{CvMcens}, \code{ADcens}, and \chiscens{} can be used with any other
+  In addition, the functions \code{KScens}, \code{CvMcens}, \code{ADcens}, and \code{chisqcens} can be used with any other
   distribution for which the corresponding density (\code{dname}), distribution (\code{pname}), and random generator
   (\code{rname}) functions are defined.
 
