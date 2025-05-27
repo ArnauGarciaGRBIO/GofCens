@@ -2,7 +2,7 @@ Package: GofCens
 Type: Package
 Title: Goodness-of-Fit Methods for Right-Censored Data
 Version: 1.5
-Date: 2025-05-23
+Date: 2025-05-27
 Authors@R: c(person("Klaus", "Langohr", role = c("aut", "cre"),
                     email = "klaus.langohr@upc.edu",
                     comment = c(ORCID = '0000-0001-7075-9192')),
@@ -35,7 +35,7 @@ Imports: fitdistrplus, grid, ggplot2, gridExtra, boot, methods
 NeedsCompilation: no
 VignetteBuilder: knitr
 Suggests: knitr, rmarkdown, rms
-Packaged: 2024-07-29
+Packaged: 2024-05-27
 Author: Klaus Langohr [aut, cre],
   Mireia Besalú [aut],
   Matilde Francisco [aut],
@@ -43,4 +43,4 @@ Author: Klaus Langohr [aut, cre],
   Guadalupe Gómez [aut]
 Maintainer: Klaus Langohr <klaus.langohr@upc.edu>
 Repository: CRAN
-Date/Publication: 2024-11-9
+Date/Publication: 2025-05-27

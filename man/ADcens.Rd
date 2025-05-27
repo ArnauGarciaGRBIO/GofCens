@@ -29,7 +29,7 @@
                the logistic (\code{"logistic"}), the loglogistic (\code{"loglogistic"}),
                and the beta (\code{"beta"}) distribution. In addition, if the
                character string used is \code{"name"}, every distribution for which the
-               corresponiding density (\code{dname}), probability (\code{pname})
+               corresponding density (\code{dname}), distribution (\code{pname}),
                and random generator (\code{rname}) functions are defined, can be used.}
   \item{betaLimits}{Two-components vector with the lower and upper bounds of the
     Beta distribution. This argument is only required, if the beta

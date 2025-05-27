@@ -22,7 +22,7 @@
 }
 
 \details{
-  The \code{GofCens} package can be used to check the goodness of fit of the following 8 distributions. The list shows the parametrizations of the
+  All functions of the \pkg{GofCens} package can be used to check the goodness of fit of the following 8 distributions. The list shows the parametrizations of the
   survival functions.
 
   \enumerate{
@@ -38,12 +38,15 @@
 
   The list of the parameters of the theoretical distribution can be set manually using the argument \code{params} of each function. In that case, the correspondence is: \eqn{\alpha} is the \code{shape} value, \eqn{\gamma} is the \code{shape2} value, \eqn{\mu} is the \code{location} value and \eqn{\beta} is the \code{scale} value.
 
+  In addition, the functions \code{KScens}, \code{CvMcens}, \code{ADcens}, and \chiscens{} can be used with any other
+  distribution for which the corresponding density (\code{dname}), distribution (\code{pname}), and random generator
+  (\code{rname}) functions are defined.
 
   \tabular{ll}{
     Package: \tab GofCens\cr
     Type: \tab Package\cr
     Version: \tab 1.5\cr
-    Date: \tab 2025-05-23\cr
+    Date: \tab 2025-05-27\cr
     License: \tab GPL (>= 2)\cr}
 }
 \author{Klaus Langohr, Mireia Besalú, Matilde Francisco, Arnau Garcia, Guadalupe Gómez
