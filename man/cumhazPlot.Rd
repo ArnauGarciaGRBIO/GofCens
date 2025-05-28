@@ -48,7 +48,7 @@
   \item{print.AIC}{Logical to indicate if the AIC of the model should be printed. Default is \code{TRUE}}
   \item{print.BIC}{Logical to indicate if the BIC of the model should be printed. Default is \code{TRUE}}
   \item{outp}{Indicator of how the output will be displayed. The possible formats are \code{list} and \code{table}.}
-  \item{\dots}{Optional arguments for function \code{par}, if \code{ggplo = FALSE}.}
+  \item{\dots}{Optional arguments for function \code{par}, if \code{ggp = FALSE}.}
 }
 
 \details{The cumulative hazard plot is based on transforming the cumulative

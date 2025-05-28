@@ -16,7 +16,7 @@
         params0 = list(shape = NULL, shape2 = NULL,
                        location = NULL, scale = NULL, theta = NULL),
         tol = 1e-04, start = NULL, ...)
-\method{CvMcens}{formula}(formula, data,...)
+\method{CvMcens}{formula}(formula, data, ...)
 }
 \arguments{
   \item{times}{Numeric vector of times until the event of interest.}

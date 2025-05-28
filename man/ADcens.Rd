@@ -80,10 +80,10 @@ An object of class \code{"ADcens"} is a list containing the following components
 }
 
 \references{
-  G. Marsaglia and J. Marsaglia. \emph{Evaluating the Aderson-Darling Distrinution}. In: Journal os Statistical Software, Articles, 9 (2) (2004), 1-5. URL: https://doi.org/10.18637/jss.v009.i02
+  G. Marsaglia and J. Marsaglia. \emph{Evaluating the Anderson-Darling Distribution}. In: Journal of Statistical Software, Articles, 9 (2) (2004), 1-5. URL: https://doi.org/10.18637/jss.v009.i02
 }
 
-\author{K. Langohr, M. Besalú, M. Francisco, A. García, G. Gómez.}
+\author{K. Langohr, M. Besalú, M. Francisco, A. Garcia, G. Gómez.}
 
 \section{Warning }{If the amount of data is large, the execution time of the
   function can be elevated. The parameter \code{BS} can
@@ -92,8 +92,8 @@ An object of class \code{"ADcens"} is a list containing the following components
 }
 
 \seealso{Function \code{ad.test} (Package \pkg{goftest}) for complete data and
-  function \link{gofcens} for statistics and p-value of th Kolmogorov-Smirnov,
-  Cramér von-Mises and Anderson-Darling together for right-censored data.
+  function \link{gofcens} for statistics and p-value of the Kolmogorov-Smirnov,
+  Cramér von-Mises, and Anderson-Darling together for right-censored data.
 }
 
 \examples{
@@ -102,7 +102,7 @@ set.seed(123)
 ADcens(times = rweibull(100, 12, scale = 4), distr = "weibull",
        BS = 199)
 summary(ADcens(times = rweibull(100, 12, scale = 4), distr = "exponential",
-       BS = 199), outp = "table", print.BIC = FALSE, print.infoBoot = TRUE)
+        BS = 199), outp = "table", print.BIC = FALSE, print.infoBoot = TRUE)
 
 \dontrun{
 # Censored data

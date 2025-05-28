@@ -14,7 +14,7 @@
 \method{kmPlot}{default}(times, cens = rep(1, length(times)), distr = "all6",
        colour = c("black", "blue", "cornflowerblue"),
        betaLimits = c(0, 1), igumb = c(10, 10), ggp = FALSE, m = NULL,
-       prnt = FALSE, degs = 3, print.AIC = TRUE, print.BIC = TRUE,...)
+       prnt = FALSE, degs = 3, print.AIC = TRUE, print.BIC = TRUE, ...)
 \method{kmPlot}{formula}(formula, data, ...)
 }
 

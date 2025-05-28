@@ -16,7 +16,7 @@
           params0 = list(shape = NULL, shape2 = NULL,
                        location = NULL, scale = NULL, theta = NULL),
           tol = 1e-04, start = NULL, ...)
-\method{chisqcens}{formula}(formula, data,...)
+\method{chisqcens}{formula}(formula, data, ...)
 }
 \arguments{
   \item{times}{Numeric vector of times until the event of interest.}
@@ -95,8 +95,7 @@ An object of class \code{"chisqcens"} is a list containing the following compone
 \examples{
 # Complete data
 set.seed(123)
-chisqcens(times = rgumbel(100, 12, scale = 4), M = 8, distr = "gumbel",
-          BS = 99)
+chisqcens(times = rgumbel(100, 12, scale = 4), M = 8, distr = "gumbel", BS = 99)
 summary(chisqcens(times = rlogis(100, 20, scale = 3), M = 8, distr = "loglogistic",
                   BS = 105), print.AIC = FALSE, print.infoBoot = TRUE)
 

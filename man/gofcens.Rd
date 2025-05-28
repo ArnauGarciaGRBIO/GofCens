@@ -18,7 +18,7 @@
         params0 = list(shape = NULL, shape2 = NULL,
                        location = NULL, scale = NULL, theta = NULL),
         tol = 1e-04, start = NULL, ...)
-\method{gofcens}{formula}(formula, data,...)
+\method{gofcens}{formula}(formula, data, ...)
 }
 \arguments{
   \item{times}{Numeric vector of times until the event of interest.}
@@ -95,9 +95,9 @@ for censored data.} In: Biometrika, 63 (2) (1976), 291-298. URL: https://doi.org
                    limit the number of random censored samples generated and
                    reduce the execution time.}
 
-\seealso{\link[stats]{ks.test} (Package \code{stats}), \code{cvm.test}
-         (Package \code{goftest}), and \code{ad.test}
-         (Package \code{goftest}) for complete data, and \link{KScens} for the
+\seealso{\link[stats]{ks.test} (Package \pkg{stats}), \code{cvm.test}
+         (Package \pkg{goftest}), and \code{ad.test}
+         (Package \pkg{goftest}) for complete data, and \link{KScens} for the
          Kolmogorov-Smirnov test for right-censored data, which returns the p-value.
 }
 
@@ -107,7 +107,7 @@ for censored data.} In: Biometrika, 63 (2) (1976), 291-298. URL: https://doi.org
 set.seed(123)
 gofcens(times = rweibull(100, 12, scale = 4), distr = "weibull", BS = 499)
 summary(gofcens(times = rweibull(100, 12, scale = 4), distr = "exponential"),
-      outp = "table", print.infoBoot = TRUE)
+        outp = "table", print.infoBoot = TRUE)
 
 # Censored data
 data(colon)
