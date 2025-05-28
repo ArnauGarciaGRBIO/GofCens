@@ -31,35 +31,35 @@ Print, summary and print summary methods for \code{ADcens}, \code{chisqcens},
 \method{print}{ADcens}(x, \dots)
 
 \method{summary}{ADcens}(object, outp = c("list", "table"),
-       print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
+        print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
 
 \method{print.summary}{ADcens}(x, degs = 3, \dots)
 
 \method{print}{chisqcens}(x, \dots)
 
 \method{summary}{chisqcens}(object, outp = c("list", "table"),
-       print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
+        print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
 
 \method{print.summary}{chisqcens}(x, degs = 3, \dots)
 
 \method{print}{CvMcens}(x, \dots)
 
 \method{summary}{CvMcens}(object, outp = c("list", "table"),
-       print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
+        print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
 
 \method{print.summary}{CvMcens}(x, degs = 3, \dots)
 
 \method{print}{gofcens}(x, \dots)
 
 \method{summary}{gofcens}(object, outp = c("list", "table"),
-       print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
+        print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
 
 \method{print.summary}{gofcens}(x, degs = 3, \dots)
 
 \method{print}{KScens}(x, \dots)
 
 \method{summary}{KScens}(object, outp = c("list", "table"),
-       print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
+        print.AIC = TRUE, print.BIC = TRUE, print.infoBoot = FALSE, \dots)
 
 \method{print.summary}{KScens}(x, degs = 3, \dots)
 
