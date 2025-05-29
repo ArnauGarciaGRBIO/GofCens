@@ -950,18 +950,18 @@ gofcens.default <- function(times, cens = rep(1, length(times)),
       })
       alfatj <- exp(-c(0, cumsum(aux2))[-m])
       Atj <- sqrt(c(1, alfatj[-m])) *
-        log(SofT0(c(0, stimes[-m]), thetahat) /
-              SofT0(stimes, thetahat))
+        log(SofT0(c(0, stimes[-m]), theta = thetahat) /
+              SofT0(stimes, theta = thetahat))
       Atj[is.nan(Atj)] <- 0
       Avec <- cumsum(Atj)
       Btj <- sqrt(c(1, alfatj[-m])) * log(svbefor / survT$surv)
       Btj[is.nan(Btj)] <- 0
       Bvec <- cumsum(Btj)
-      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, thetahat)) *
+      Yl <- sqrt(n) / 2 * (svbefor + SofT0(stimes, theta = thetahat)) *
         (Avec - c(0, Bvec[-m])) * ifelse(Bvec > 0, 1, 0)
-      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, thetahat)) *
+      Y <-  sqrt(n) / 2 * (survT$surv + SofT0(stimes, theta = thetahat)) *
         (Avec - Bvec) * ifelse(Bvec > 0, 1, 0)
-      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], thetahat)) * (Avec[m] - Bvec[m])
+      Ym <- sqrt(n) / 2 * (survT$surv[m] + SofT0(stimes[m], theta = thetahat)) * (Avec[m] - Bvec[m])
       A <- max(abs(c(Yl, Y, Ym)))
       return(c(AD, CvM, A))
     }
