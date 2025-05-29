@@ -103,7 +103,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         aic <- 2 - 2*paramsML$loglik[1]
         bic <- log(length(times)) - 2*paramsML$loglik[1]
       }
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - pexp(x, 1/ beta)
       }
       expStat <- function(dat) {
@@ -195,7 +195,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       betaSE <- unname(paramsML$sd[2])
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - pgumbel(x, mu, beta)
       }
       gumbStat <- function(dat) {
@@ -281,7 +281,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       betaSE <- unname(paramsML$sd[2])
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - pweibull(x, alpha, beta)
       }
       weiStat <- function(dat) {
@@ -365,7 +365,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       betaSE <- unname(paramsML$sd[2])
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - pnorm(x, mu, beta)
       }
       normStat <- function(dat) {
@@ -449,7 +449,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       betaSE <- unname(paramsML$sd[2])
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - plnorm(x, mu, beta)
       }
       lnormStat <- function(dat) {
@@ -534,7 +534,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       betaSE <- unname(paramsML$sd[2])
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - plogis(x, mu, beta)
       }
       logiStat <- function(dat) {
@@ -624,7 +624,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
         aic <- 2*2 - 2*paramsML$loglik[1]
         bic <- log(length(times))*2 - 2*paramsML$loglik[1]
       }
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - pllogis(x, alpha, scale = beta)
       }
       llogiStat <- function(dat) {
@@ -713,7 +713,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       gammaSE <- unname(paramsML$sd[2])
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, alpha, gamma, mu, beta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - pbeta((x - aBeta) / (bBeta - aBeta), alpha, gamma)
       }
       betaStat <- function(dat) {
@@ -801,7 +801,7 @@ KScens.default <- function(times, cens = rep(1, length(times)),
       }
       aic <- paramsML$aic
       bic <- paramsML$bic
-      SofT0 <- function(x, theta) {
+      SofT0 <- function(x, alpha, gamma, mu, beta, theta) {
         1 - do.call(pdistname, c(list(x), as.list(theta)))
       }
       otherStat <- function(dat) {
